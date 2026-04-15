@@ -9,7 +9,7 @@
       const password = loginPass.value.trim();
       if(password === '001@Thuli_$Deshan:T1-M:T') {
         showToast('✅ Login successful! Redirecting...');
-        window.location.href ="admin Page.html";
+        window.location.href ="Admin data entry.html";
       } else {
         errorMessage.classList.remove('hidden1');
         loginPass.value = '';
