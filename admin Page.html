@@ -346,16 +346,11 @@
     
     // ==================== API FUNCTIONS (Google Sheets) ====================
     
-    async function registerStudent(data) {
-        const result = await callGSheet('registerStudent', 'POST', data);
-        if (result.success) {
-            showToast("Student registered successfully!");
-            return true;
-        } else {
-            showToast(result.error || "Registration failed!", true);
-            return false;
-        }
-    }
+   if (result && result.lastId) {
+    showLastId(result.lastId);
+} else {
+    showToast("ID not returned from server", true);
+}
     
     async function updateStudent(id, updatedData) {
         const payload = { id, ...updatedData };
