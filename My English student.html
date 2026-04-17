@@ -190,7 +190,7 @@
 <div class="admin-link"><a href="index.html"><i class="fas fa-crown"></i> Back</a></div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhzkuR-2CRZ27RMG_EfBecVWGujQEnixCn4WEoB_JQfAOhRwJn5SP1hHMpQJCEaq7u/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbys9xHK0MPOAjXoWSw5sTJ4xEz6qn5HQIWZtuJqaBiQXxlV5F8kc8g_8Yk5W2BZ9W6a/exec";
     
     function showLoader(s){document.getElementById('loadingOverlay').style.display=s?'flex':'none'}
     function showToast(m,e=false){let t=document.createElement('div');t.className='toast-msg';t.style.background=e?'#e67e22':'#2ecc71';t.innerText=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}
@@ -387,7 +387,7 @@ async function loadProfile(s){
         window.open(`https://wa.me/94767899845?text=Password recovery for ID: ${id}`,'_blank');
     });
     document.getElementById('joinRequestBtn')?.addEventListener('click',()=>{
-        window.open('https://wa.me/94767899845?text=I would like to join Your English class Teacher','_blank');
+        window.open('https://wa.me/94767899845?text=I would like to join Your class Teacher','_blank');
     });
     document.getElementById('logoutBtn')?.addEventListener('click',()=>{
         currentStudent=null;if(pieChart)pieChart.destroy();

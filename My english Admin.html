@@ -675,6 +675,7 @@
                 <i class="fas fa-filter"></i>
                 <span>Data Filter</span>
             </div>
+            <div class="admin-card" data-section="datafilter"><i class="fas fa-database"></i><br>Data Viewer</div>
             <div class="admin-card" data-section="promote">
                 <i class="fas fa-arrow-up"></i>
                 <span>Promote All</span>
@@ -695,7 +696,7 @@
 
 <script>
     // ==================== CONFIGURATION ====================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhzkuR-2CRZ27RMG_EfBecVWGujQEnixCn4WEoB_JQfAOhRwJn5SP1hHMpQJCEaq7u/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbys9xHK0MPOAjXoWSw5sTJ4xEz6qn5HQIWZtuJqaBiQXxlV5F8kc8g_8Yk5W2BZ9W6a/exec";
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
     // ==================== HELPER FUNCTIONS ====================
@@ -803,6 +804,7 @@
             else if (section === 'skill') showSkillGradeSelect();
             else if (section === 'payment') showPaymentGradeSelect();
             else if (section === 'filter') showFilterModal();
+            else if (section === 'datafilter') showDataFilterUI();
             else if (section === 'promote') promoteAllGrades();
         });
     });
@@ -1396,6 +1398,230 @@
             });
         });
     }
+    
+   // ==================== DATA VIEWER UI (FILTER BY GRADE) ====================
+async function showDataFilterUI() {
+    showLoader(true);
+    const gradesResult = await apiCall('getDistinctGrades', 'GET');
+    showLoader(false);
+    
+    const grades = gradesResult.success ? gradesResult.data : [1,2,3,4,5,6,7,8,9,10,11,12,13];
+    
+    let html = `
+        <div class="modal-content" style="max-width: 1100px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-database"></i> Data Viewer - Filter by Grade</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label><i class="fas fa-graduation-cap"></i> Select Grade *</label>
+                    <select id="viewerGrade" style="background: rgba(255,255,255,0.2);">
+                        <option value="">-- Select Grade --</option>
+                        ${grades.map(g => `<option value="${g}">Grade ${g}</option>`).join('')}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-layer-group"></i> Select Sheet *</label>
+                    <select id="viewerSheet" style="background: rgba(255,255,255,0.2);">
+                        <option value="">-- Select Sheet --</option>
+                        <option value="Registration">📋 Registration</option>
+                        <option value="Attendance">📅 Attendance</option>
+                        <option value="ExamMarks">📝 Exam Marks</option>
+                        <option value="Skills">🎯 Skills</option>
+                        <option value="Payments">💰 Payments</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group" id="dateMonthFilterContainer" style="display: none;">
+                <label id="dateMonthLabel"><i class="fas fa-calendar"></i> Select Date/Month</label>
+                <select id="viewerDateMonth" style="background: rgba(255,255,255,0.2);">
+                    <option value="">All</option>
+                </select>
+            </div>
+            
+            <div class="flex-row">
+                <button id="loadDataBtn" class="primary" disabled><i class="fas fa-eye"></i> Load Data</button>
+                <button id="exportViewerBtn" class="secondary" disabled><i class="fas fa-download"></i> Export to Excel</button>
+                <button type="button" class="close-modal secondary"><i class="fas fa-times"></i> Close</button>
+            </div>
+            
+            <div id="viewerResults" style="margin-top: 20px; max-height: 400px; overflow: auto;">
+                <p style="color: #aaa; text-align: center;">Select Grade and Sheet, then click "Load Data"</p>
+            </div>
+        </div>
+    `;
+    
+    openModal(html);
+    
+    const gradeSelect = document.getElementById('viewerGrade');
+    const sheetSelect = document.getElementById('viewerSheet');
+    const dateMonthContainer = document.getElementById('dateMonthFilterContainer');
+    const dateMonthLabel = document.getElementById('dateMonthLabel');
+    const dateMonthSelect = document.getElementById('viewerDateMonth');
+    const loadBtn = document.getElementById('loadDataBtn');
+    const exportBtn = document.getElementById('exportViewerBtn');
+    
+    let currentViewerData = [];
+    
+    function checkEnableLoad() {
+        loadBtn.disabled = !(gradeSelect.value && sheetSelect.value);
+    }
+    
+    gradeSelect.addEventListener('change', checkEnableLoad);
+    sheetSelect.addEventListener('change', async () => {
+        checkEnableLoad();
+        
+        const grade = gradeSelect.value;
+        const sheet = sheetSelect.value;
+        
+        if (grade && sheet) {
+            if (sheet === 'Attendance' || sheet === 'ExamMarks') {
+                dateMonthContainer.style.display = 'block';
+                dateMonthLabel.innerHTML = '<i class="fas fa-calendar"></i> Select Date';
+                
+                showLoader(true);
+                const datesResult = await apiCall('getDistinctDatesForSheet', 'GET', { 
+                    sheetName: sheet, 
+                    grade: grade 
+                });
+                showLoader(false);
+                
+                if (datesResult.success && datesResult.data) {
+                    dateMonthSelect.innerHTML = '<option value="">All Dates</option>' + 
+                        datesResult.data.map(d => `<option value="${d}">${d}</option>`).join('');
+                }
+            } else if (sheet === 'Payments') {
+                dateMonthContainer.style.display = 'block';
+                dateMonthLabel.innerHTML = '<i class="fas fa-calendar"></i> Select Month';
+                
+                showLoader(true);
+                const monthsResult = await apiCall('getDistinctMonthsForGrade', 'GET', { grade });
+                showLoader(false);
+                
+                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                if (monthsResult.success && monthsResult.data) {
+                    dateMonthSelect.innerHTML = '<option value="">All Months</option>' + 
+                        months.filter(m => monthsResult.data.includes(m)).map(m => `<option value="${m}">${m}</option>`).join('');
+                }
+            } else {
+                dateMonthContainer.style.display = 'none';
+            }
+        }
+    });
+    
+    loadBtn.addEventListener('click', async () => {
+        const grade = gradeSelect.value;
+        const sheet = sheetSelect.value;
+        const dateFilter = dateMonthSelect.value || null;
+        
+        if (!grade || !sheet) {
+            showToast('Please select Grade and Sheet', true);
+            return;
+        }
+        
+        showLoader(true);
+        const result = await apiCall('getFilteredDataByGrade', 'POST', {
+            sheetName: sheet,
+            grade: grade,
+            dateFilter: dateFilter
+        });
+        showLoader(false);
+        
+        if (result.success) {
+            currentViewerData = result.data;
+            displayViewerResults(result.data, sheet);
+            exportBtn.disabled = result.data.length === 0;
+            showToast(`✅ Loaded ${result.count} records!`);
+        } else {
+            showToast(result.message || 'Error loading data', true);
+            document.getElementById('viewerResults').innerHTML = `<p style="color: #e74c3c; text-align: center;">Error: ${result.message}</p>`;
+            exportBtn.disabled = true;
+        }
+    });
+    
+    exportBtn.addEventListener('click', () => {
+        if (!currentViewerData || currentViewerData.length === 0) {
+            showToast('No data to export!', true);
+            return;
+        }
+        exportViewerToCSV(currentViewerData, sheetSelect.value, gradeSelect.value);
+    });
+}
+
+function displayViewerResults(data, sheetName) {
+    if (!data || data.length === 0) {
+        document.getElementById('viewerResults').innerHTML = '<p style="color: #f39c12; text-align: center;">No records found.</p>';
+        return;
+    }
+    
+    const headers = Object.keys(data[0]);
+    
+    let tableHtml = `
+        <div style="background: rgba(0,255,157,0.15); padding: 12px; border-radius: 12px; margin-bottom: 15px;">
+            <strong>📊 ${data.length} record(s) found in ${sheetName}</strong>
+        </div>
+        <div style="overflow-x: auto; max-height: 350px;">
+            <table class="student-table" style="font-size: 0.85rem; width: 100%;">
+                <thead>
+                    <tr>${headers.map(h => `<th style="position: sticky; top: 0; background: #2a4a3a;">${h}</th>`).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${data.map(row => `
+                        <tr>
+                            ${headers.map(h => `<td>${row[h] !== undefined && row[h] !== null ? row[h] : '-'}</td>`).join('')}
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    document.getElementById('viewerResults').innerHTML = tableHtml;
+}
+
+function exportViewerToCSV(data, sheetName, grade) {
+    if (!data || data.length === 0) return;
+    
+    const headers = Object.keys(data[0]);
+    const csvRows = [];
+    
+    csvRows.push(headers.join(','));
+    
+    data.forEach(row => {
+        const values = headers.map(h => {
+            const val = row[h];
+            if (val === null || val === undefined) return '';
+            const strVal = String(val);
+            if (strVal.includes(',') || strVal.includes('"') || strVal.includes('\n')) {
+                return '"' + strVal.replace(/"/g, '""') + '"';
+            }
+            return strVal;
+        });
+        csvRows.push(values.join(','));
+    });
+    
+    const csvString = csvRows.join('\n');
+    const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${sheetName}_Grade${grade}_${timestamp}.csv`);
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showToast(`✅ Exported ${data.length} records to CSV!`);
+}
+
     
     // ==================== DATA FILTER ====================
     function showFilterModal() {
