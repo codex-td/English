@@ -1399,19 +1399,19 @@
         });
     }
     
-   // ==================== DATA VIEWER UI (FILTER BY GRADE) ====================
+// ==================== DATA VIEWER UI (FILTER BY GRADE) ====================
 async function showDataFilterUI() {
     showLoader(true);
     const gradesResult = await apiCall('getDistinctGrades', 'GET');
     showLoader(false);
     
-    const grades = gradesResult.success ? gradesResult.data : [1,2,3,4,5,6,7,8,9,10,11,12,13];
+    const grades = gradesResult.success ? gradesResult.data : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     
     let html = `
         <div class="modal-content" style="max-width: 1100px;">
             <div class="modal-header">
                 <h2><i class="fas fa-database"></i> Data Viewer - Filter by Grade</h2>
-                <button class="close-modal">&times;</button>
+                <button class="close-modal" onclick="document.getElementById('dynamicModal').style.display='none'">&times;</button>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -1446,7 +1446,7 @@ async function showDataFilterUI() {
             <div class="flex-row">
                 <button id="loadDataBtn" class="primary" disabled><i class="fas fa-eye"></i> Load Data</button>
                 <button id="exportViewerBtn" class="secondary" disabled><i class="fas fa-download"></i> Export to Excel</button>
-                <button type="button" class="close-modal secondary"><i class="fas fa-times"></i> Close</button>
+                <button type="button" class="close-modal secondary" onclick="document.getElementById('dynamicModal').style.display='none'"><i class="fas fa-times"></i> Close</button>
             </div>
             
             <div id="viewerResults" style="margin-top: 20px; max-height: 400px; overflow: auto;">
@@ -1484,14 +1484,14 @@ async function showDataFilterUI() {
                 dateMonthLabel.innerHTML = '<i class="fas fa-calendar"></i> Select Date';
                 
                 showLoader(true);
-                const datesResult = await apiCall('getDistinctDatesForSheet', 'GET', { 
-                    sheetName: sheet, 
-                    grade: grade 
+                const datesResult = await apiCall('getDistinctDatesForSheet', 'GET', {
+                    sheetName: sheet,
+                    grade: grade
                 });
                 showLoader(false);
                 
                 if (datesResult.success && datesResult.data) {
-                    dateMonthSelect.innerHTML = '<option value="">All Dates</option>' + 
+                    dateMonthSelect.innerHTML = '<option value="">All Dates</option>' +
                         datesResult.data.map(d => `<option value="${d}">${d}</option>`).join('');
                 }
             } else if (sheet === 'Payments') {
@@ -1504,7 +1504,7 @@ async function showDataFilterUI() {
                 
                 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 if (monthsResult.success && monthsResult.data) {
-                    dateMonthSelect.innerHTML = '<option value="">All Months</option>' + 
+                    dateMonthSelect.innerHTML = '<option value="">All Months</option>' +
                         months.filter(m => monthsResult.data.includes(m)).map(m => `<option value="${m}">${m}</option>`).join('');
                 }
             } else {
@@ -1621,7 +1621,6 @@ function exportViewerToCSV(data, sheetName, grade) {
     
     showToast(`✅ Exported ${data.length} records to CSV!`);
 }
-
     
     // ==================== DATA FILTER ====================
     function showFilterModal() {
