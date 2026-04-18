@@ -190,7 +190,7 @@
 <div class="admin-link"><a href="index.html"><i class="fas fa-crown"></i> Back</a></div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq9tqwgg-vMdCTz13RewY_IyrlTH972ocigv54I-7o43uhgkobRFiT0hOtA-_G0iuJ/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNMWka34ZKl-9hzCjM_gUhIyYd1HrdjZAk9gF_lgRLFo5EEzDnwem0hg3O92e0u84l/exec";
     
     function showLoader(s){document.getElementById('loadingOverlay').style.display=s?'flex':'none'}
     function showToast(m,e=false){let t=document.createElement('div');t.className='toast-msg';t.style.background=e?'#e67e22':'#2ecc71';t.innerText=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}
@@ -245,63 +245,58 @@ async function loadProfile(s){
     // Get the most recent present date
     if (presentRecords.length > 0) {
         let lastPresentDate = presentRecords[0].date;
+        
+        // ✅ ADD ONE DAY to fix timezone shift for display
+        if (lastPresentDate && lastPresentDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const parts = lastPresentDate.split('-');
+            const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+            originalDate.setUTCDate(originalDate.getUTCDate() + 1);
+            
+            const year = originalDate.getUTCFullYear();
+            const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(originalDate.getUTCDate()).padStart(2, '0');
+            lastPresentDate = `${year}-${month}-${day}`;
+        }
+        
         document.getElementById('lastAttendDate').innerText = lastPresentDate;
-        console.log('Last present date:', lastPresentDate);
+        console.log('Last present date (display):', lastPresentDate);
     } else {
         document.getElementById('lastAttendDate').innerText = 'No records';
     }
     
-    // ✅ FIX: Convert today to match whatever format Google Sheets sends
+    // ✅ Check today's status - ALSO add one day to record date for comparison
     let today = new Date();
+    let todayStr = today.getFullYear() + '-' + 
+                   String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                   String(today.getDate()).padStart(2, '0');
     
-    // Function to format date same as Google Sheets format
-    function formatDateLikeSheet(date) {
-        let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        
-        let dayName = days[date.getDay()];
-        let monthName = months[date.getMonth()];
-        let dayNum = date.getDate();
-        let year = date.getFullYear();
-        
-        return `${dayName} ${monthName} ${dayNum.toString().padStart(2, '0')} ${year}`;
-    }
+    console.log('Today formatted:', todayStr);
     
-    // Try multiple formats for comparison
-    let todayFormats = [
-        today.getFullYear() + '-' + 
-        String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-        String(today.getDate()).padStart(2, '0'), // 2026-04-17
-        
-        formatDateLikeSheet(today), // Fri Apr 17 2026
-        
-        today.toDateString(), // Fri Apr 17 2026
-        
-        today.toISOString().split('T')[0] // 2026-04-17
-    ];
-    
-    console.log('Today formats to check:', todayFormats);
-    
-    // ✅ Check if ANY present record matches ANY of today's formats
     let todayPresent = false;
     for (let record of presentRecords) {
-        let recordDate = String(record.date).trim();
-        console.log('Checking record date:', recordDate);
+        let recordDate = record.date;
         
-        for (let fmt of todayFormats) {
-            if (recordDate.includes(fmt) || fmt.includes(recordDate) || recordDate === fmt) {
-                todayPresent = true;
-                console.log('✅ Match found!', recordDate, 'matches', fmt);
-                break;
-            }
+        // ✅ ADD ONE DAY to record date for comparison
+        if (recordDate && recordDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const parts = recordDate.split('-');
+            const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+            originalDate.setUTCDate(originalDate.getUTCDate() + 1);
+            
+            const year = originalDate.getUTCFullYear();
+            const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(originalDate.getUTCDate()).padStart(2, '0');
+            recordDate = `${year}-${month}-${day}`;
         }
-        if (todayPresent) break;
+        
+        console.log('Comparing:', recordDate, 'with', todayStr);
+        if (recordDate === todayStr) {
+            todayPresent = true;
+            break;
+        }
     }
     
     console.log('Today present?', todayPresent);
     
-    // Update UI
     if (todayPresent) {
         document.getElementById('inClassStatus').innerHTML = 
             '<span style="background:#2ecc71;color:white;padding:4px 12px;border-radius:20px">✅ Active Today</span>';
@@ -310,7 +305,6 @@ async function loadProfile(s){
             '<span style="background:#e74c3c;color:white;padding:4px 12px;border-radius:20px">⏳ Not Attended Today</span>';
     }
 }
-
 
     async function renderExamAnalysis(id){
         let marks=await apiCall('getExamMarks','GET',{id});

@@ -696,7 +696,7 @@
 
 <script>
     // ==================== CONFIGURATION ====================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq9tqwgg-vMdCTz13RewY_IyrlTH972ocigv54I-7o43uhgkobRFiT0hOtA-_G0iuJ/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzit9ask62mwK3peoEQKt7MKMxfHjOud1uR_OCDoBsHRAX8ecUnSUtkfZ2s4co_OM9y/exec";
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
     // ==================== HELPER FUNCTIONS ====================
@@ -1046,7 +1046,11 @@
     }
     
     async function showAttendanceUI(grade) {
-        let today = new Date().toISOString().slice(0, 10);
+        // ✅ FIX: Get local date without timezone shift
+let d = new Date();
+let today = d.getFullYear() + '-' + 
+            String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(d.getDate()).padStart(2, '0');
         
         let check = await apiCall('checkAttendanceToday', 'GET', { grade, date: today });
         if (check.exists) {
@@ -1155,7 +1159,11 @@
             return;
         }
         
-        let today = new Date().toISOString().slice(0, 10);
+        // ✅ FIX: Get local date without timezone shift
+let d = new Date();
+let today = d.getFullYear() + '-' + 
+            String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(d.getDate()).padStart(2, '0');
         
         let rows = students.data.map(s => `
             <tr>
@@ -1560,9 +1568,55 @@ function displayViewerResults(data, sheetName) {
     
     const headers = Object.keys(data[0]);
     
+    // ✅ ADD ONE DAY to all date fields to fix timezone shift
+    const processedData = data.map(row => {
+        const newRow = {};
+        headers.forEach(h => {
+            let value = row[h];
+            
+            // Check if this is a date field
+            if (value && (h === 'Date' || h === 'Birth' || h.toLowerCase().includes('date') || h.toLowerCase().includes('birth'))) {
+                try {
+                    let dateStr = '';
+                    
+                    // Convert to string
+                    if (value instanceof Date) {
+                        const year = value.getUTCFullYear();
+                        const month = String(value.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(value.getUTCDate()).padStart(2, '0');
+                        dateStr = `${year}-${month}-${day}`;
+                    } else if (typeof value === 'string') {
+                        dateStr = value.split('T')[0];
+                    } else {
+                        dateStr = String(value);
+                    }
+                    
+                    // ✅ ADD ONE DAY to fix timezone shift
+                    if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                        const parts = dateStr.split('-');
+                        const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+                        originalDate.setUTCDate(originalDate.getUTCDate() + 1);
+                        
+                        const year = originalDate.getUTCFullYear();
+                        const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(originalDate.getUTCDate()).padStart(2, '0');
+                        newRow[h] = `${year}-${month}-${day}`;
+                    } else {
+                        newRow[h] = dateStr;
+                    }
+                } catch (e) {
+                    newRow[h] = value;
+                }
+            } else {
+                newRow[h] = value !== undefined && value !== null ? value : '-';
+            }
+        });
+        return newRow;
+    });
+    
     let tableHtml = `
         <div style="background: rgba(0,255,157,0.15); padding: 12px; border-radius: 12px; margin-bottom: 15px;">
-            <strong>📊 ${data.length} record(s) found in ${sheetName}</strong>
+            <strong>📊 ${processedData.length} record(s) found in ${sheetName}</strong>
         </div>
         <div style="overflow-x: auto; max-height: 350px;">
             <table class="student-table" style="font-size: 0.85rem; width: 100%;">
@@ -1570,9 +1624,9 @@ function displayViewerResults(data, sheetName) {
                     <tr>${headers.map(h => `<th style="position: sticky; top: 0; background: #2a4a3a;">${h}</th>`).join('')}</tr>
                 </thead>
                 <tbody>
-                    ${data.map(row => `
+                    ${processedData.map(row => `
                         <tr>
-                            ${headers.map(h => `<td>${row[h] !== undefined && row[h] !== null ? row[h] : '-'}</td>`).join('')}
+                            ${headers.map(h => `<td>${row[h]}</td>`).join('')}
                         </tr>
                     `).join('')}
                 </tbody>
@@ -1593,7 +1647,36 @@ function exportViewerToCSV(data, sheetName, grade) {
     
     data.forEach(row => {
         const values = headers.map(h => {
-            const val = row[h];
+            let val = row[h];
+            
+            // ✅ ADD ONE DAY to date fields for export
+            if (val && (h === 'Date' || h === 'Birth' || h.toLowerCase().includes('date') || h.toLowerCase().includes('birth'))) {
+                try {
+                    let dateStr = '';
+                    if (val instanceof Date) {
+                        const year = val.getUTCFullYear();
+                        const month = String(val.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(val.getUTCDate()).padStart(2, '0');
+                        dateStr = `${year}-${month}-${day}`;
+                    } else if (typeof val === 'string') {
+                        dateStr = val.split('T')[0];
+                    } else {
+                        dateStr = String(val);
+                    }
+                    
+                    if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                        const parts = dateStr.split('-');
+                        const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+                        originalDate.setUTCDate(originalDate.getUTCDate() + 1);
+                        
+                        const year = originalDate.getUTCFullYear();
+                        const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(originalDate.getUTCDate()).padStart(2, '0');
+                        val = `${year}-${month}-${day}`;
+                    }
+                } catch (e) {}
+            }
+            
             if (val === null || val === undefined) return '';
             const strVal = String(val);
             if (strVal.includes(',') || strVal.includes('"') || strVal.includes('\n')) {
@@ -1621,7 +1704,6 @@ function exportViewerToCSV(data, sheetName, grade) {
     
     showToast(`✅ Exported ${data.length} records to CSV!`);
 }
-    
     // ==================== DATA FILTER ====================
     function showFilterModal() {
         let html = `
@@ -1665,7 +1747,48 @@ function exportViewerToCSV(data, sheetName, grade) {
             showLoader(false);
             
             if (r.success) {
-                document.getElementById('filterResult').innerHTML = `<pre>${JSON.stringify(r.data, null, 2)}</pre>`;
+                // ✅ FIX: Process data to add one day to dates before display
+let processedData = r.data;
+if (r.data && r.data.length > 0) {
+    processedData = r.data.map(row => {
+        const newRow = {};
+        Object.keys(row).forEach(key => {
+            let value = row[key];
+            
+            // Add one day to date fields
+            if (value && (key === 'Date' || key === 'Birth' || 
+                key.toLowerCase().includes('date') || key.toLowerCase().includes('birth'))) {
+                try {
+                    let dateStr = '';
+                    if (value instanceof Date) {
+                        const year = value.getUTCFullYear();
+                        const month = String(value.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(value.getUTCDate()).padStart(2, '0');
+                        dateStr = `${year}-${month}-${day}`;
+                    } else if (typeof value === 'string') {
+                        dateStr = value.split('T')[0];
+                    } else {
+                        dateStr = String(value);
+                    }
+                    
+                    if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                        const parts = dateStr.split('-');
+                        const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+                        originalDate.setUTCDate(originalDate.getUTCDate() + 1);
+                        
+                        const year = originalDate.getUTCFullYear();
+                        const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(originalDate.getUTCDate()).padStart(2, '0');
+                        value = `${year}-${month}-${day}`;
+                    }
+                } catch (e) {}
+            }
+            newRow[key] = value;
+        });
+        return newRow;
+    });
+}
+document.getElementById('filterResult').innerHTML = `<pre>${JSON.stringify(processedData, null, 2)}</pre>`;
             } else {
                 showToast(r.message, true);
             }
