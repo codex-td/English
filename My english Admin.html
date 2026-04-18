@@ -696,7 +696,7 @@
 
 <script>
     // ==================== CONFIGURATION ====================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbys9xHK0MPOAjXoWSw5sTJ4xEz6qn5HQIWZtuJqaBiQXxlV5F8kc8g_8Yk5W2BZ9W6a/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq9tqwgg-vMdCTz13RewY_IyrlTH972ocigv54I-7o43uhgkobRFiT0hOtA-_G0iuJ/exec";
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
     // ==================== HELPER FUNCTIONS ====================
@@ -1411,7 +1411,7 @@ async function showDataFilterUI() {
         <div class="modal-content" style="max-width: 1100px;">
             <div class="modal-header">
                 <h2><i class="fas fa-database"></i> Data Viewer - Filter by Grade</h2>
-                <button class="close-modal" onclick="document.getElementById('dynamicModal').style.display='none'">&times;</button>
+                <button class="close-modal">&times;</button>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -1446,7 +1446,7 @@ async function showDataFilterUI() {
             <div class="flex-row">
                 <button id="loadDataBtn" class="primary" disabled><i class="fas fa-eye"></i> Load Data</button>
                 <button id="exportViewerBtn" class="secondary" disabled><i class="fas fa-download"></i> Export to Excel</button>
-                <button type="button" class="close-modal secondary" onclick="document.getElementById('dynamicModal').style.display='none'"><i class="fas fa-times"></i> Close</button>
+                <button type="button" class="close-modal secondary"><i class="fas fa-times"></i> Close</button>
             </div>
             
             <div id="viewerResults" style="margin-top: 20px; max-height: 400px; overflow: auto;">
@@ -1621,6 +1621,7 @@ function exportViewerToCSV(data, sheetName, grade) {
     
     showToast(`✅ Exported ${data.length} records to CSV!`);
 }
+
     
     // ==================== DATA FILTER ====================
     function showFilterModal() {
