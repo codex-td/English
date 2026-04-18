@@ -307,19 +307,55 @@ async function loadProfile(s){
 }
 
     async function renderExamAnalysis(id){
-        let marks=await apiCall('getExamMarks','GET',{id});
-        let skills=await apiCall('getSkill','GET',{id});
-        let skillData=skills.success?skills.data:{grammar:0,writing:0,reading:0,spoken:0};
-        let paperMap=new Map();
-        (marks.success?marks.data:[]).forEach(m=>{if(!paperMap.has(m.date))paperMap.set(m.date,parseInt(m.mark)||0)});
-        currentPapers=Array.from(paperMap.entries()).map(([d,m])=>({paperName:`Exam - ${d}`,marks:m,skills:skillData}));
-        currentPapers.sort((a,b)=>new Date(b.paperName.split(' - ')[1])-new Date(a.paperName.split(' - ')[1]));
-        let sel=document.getElementById('paperSelect');
-        sel.innerHTML=currentPapers.length?currentPapers.map((p,i)=>`<option value="${i}">${p.paperName} (${p.marks}/100)</option>`).join(''):'<option>No exams</option>';
-        sel.onchange=e=>{currentPaperIndex=parseInt(e.target.value);updatePieAndBars()};
-        if(currentPapers.length)updatePieAndBars();
-    }
-
+    let marks = await apiCall('getExamMarks', 'GET', { id });
+    let skills = await apiCall('getSkill', 'GET', { id });
+    let skillData = skills.success ? skills.data : { grammar: 0, writing: 0, reading: 0, spoken: 0 };
+    let paperMap = new Map();
+    
+    (marks.success ? marks.data : []).forEach(m => {
+        if (!paperMap.has(m.date)) {
+            let displayDate = m.date;
+            
+            // ✅ ADD ONE DAY to exam date for display
+            if (displayDate && displayDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                const parts = displayDate.split('-');
+                const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+                originalDate.setUTCDate(originalDate.getUTCDate() + 1);
+                
+                const year = originalDate.getUTCFullYear();
+                const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(originalDate.getUTCDate()).padStart(2, '0');
+                displayDate = `${year}-${month}-${day}`;
+            }
+            
+            paperMap.set(m.date, { 
+                displayDate: displayDate, 
+                mark: parseInt(m.mark) || 0 
+            });
+        }
+    });
+    
+    currentPapers = Array.from(paperMap.entries()).map(([originalDate, data]) => ({ 
+        paperName: `Exam - ${data.displayDate}`, 
+        marks: data.mark, 
+        skills: skillData,
+        originalDate: originalDate
+    }));
+    
+    currentPapers.sort((a, b) => new Date(b.originalDate) - new Date(a.originalDate));
+    
+    let sel = document.getElementById('paperSelect');
+    sel.innerHTML = currentPapers.length ? 
+        currentPapers.map((p, i) => `<option value="${i}">${p.paperName} (${p.marks}/100)</option>`).join('') : 
+        '<option>No exams</option>';
+    
+    sel.onchange = e => {
+        currentPaperIndex = parseInt(e.target.value);
+        updatePieAndBars();
+    };
+    
+    if (currentPapers.length) updatePieAndBars();
+}
     function updatePieAndBars(){
         if(!currentPapers.length)return;
         let p=currentPapers[currentPaperIndex];
