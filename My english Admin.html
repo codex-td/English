@@ -583,6 +583,12 @@
                 font-size: 1.5rem;
             }
         }
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}
+
     </style>
 </head>
 <body>
@@ -757,33 +763,32 @@
     });
     
     // ==================== ADMIN LOGIN ====================
-    document.getElementById('adminLoginBtn').addEventListener('click', function() {
-        let u = document.getElementById('adminUser').value;
-        let p = document.getElementById('adminPass').value;
+document.getElementById('adminLoginBtn').addEventListener('click', function() {
+    let u = document.getElementById('adminUser').value.trim();
+    let p = document.getElementById('adminPass').value;
+    
+    // ✅ FIXED: Proper login condition
+    const validUsernames = ['Thuli', '001@U_M_R:ADMIN'];
+    const validPasswords = ['001@Thuli_$Deshan:T1-M:T', 'E001@U_M_R:Admin-M/T'];
+    
+    if (validUsernames.includes(u) && validPasswords.includes(p)) {
+        document.getElementById('adminLoginPanel').style.display = 'none';
+        document.getElementById('adminDashboard').style.display = 'block';
+        loadPendingCount();
+        showToast('Welcome, Admin!');
         
-        if (u === 'Thuli' ,'001@U_M_R:ADMIN' && p === '001@Thuli_$Deshan:T1-M:T', 'E001@U_M_R:Admin-M/T')  {
-            document.getElementById('adminLoginPanel').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
-            loadPendingCount();
-            showToast('Welcome, Admin!');
-        } else {
-            document.getElementById('adminLoginMsg').innerHTML = '<i class="fas fa-exclamation-circle"></i> Invalid credentials!';
-        }
-    });
-    
-    // Enter key for login
-    document.getElementById('adminPass').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            document.getElementById('adminLoginBtn').click();
-        }
-    });
-    
-    document.getElementById('adminLogoutBtn')?.addEventListener('click', function() {
-        document.getElementById('adminDashboard').style.display = 'none';
-        document.getElementById('adminLoginPanel').style.display = 'block';
+        // Clear password field
         document.getElementById('adminPass').value = '';
-    });
-    
+    } else {
+        document.getElementById('adminLoginMsg').innerHTML = '<i class="fas fa-exclamation-circle"></i> Invalid credentials!';
+        document.getElementById('adminPass').value = '';
+        
+        // Shake effect (optional)
+        const passInput = document.getElementById('adminPass');
+        passInput.style.animation = 'shake 0.3s ease';
+        setTimeout(() => passInput.style.animation = '', 300);
+    }
+});
     // ==================== LOAD PENDING COUNT ====================
     async function loadPendingCount() {
         let r = await apiCall('getPendingRegistrations', 'GET');
