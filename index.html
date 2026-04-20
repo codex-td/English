@@ -449,24 +449,142 @@
     .login-section button:hover {
       background: #07c299;
     }
-
-    .login-section input.error {
-  background: rgba(255, 80, 80, 0.15) !important;
-  border: 2px solid #ff4757 !important;
-  color: #ff4757 !important;
-  animation: shake 0.3s ease;
+    /* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #1a5c3a;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
 }
 
-.login-section input.error::placeholder {
-  color: #ff4757 !important;
-  font-weight: 500;
+.theme-toggle:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.3);
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+/* Dark Mode Styles */
+body.dark-mode {
+    background: radial-gradient(circle at 10% 30%, #0a1a2a, #0d2a1a) !important;
+    background-attachment: fixed !important;
 }
+
+body.dark-mode .glass-card,
+body.dark-mode .glass-panel,
+body.dark-mode nav,
+body.dark-mode .teacher-detail-card,
+body.dark-mode .info-card,
+body.dark-mode .card,
+body.dark-mode .contact-box,
+body.dark-mode footer,
+body.dark-mode .slider-wrapper {
+    background: rgba(20, 30, 40, 0.7) !important;
+    color: #f0f0f0 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode p,
+body.dark-mode label,
+body.dark-mode .logo {
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode .logo {
+    background: linear-gradient(135deg, #fff, #00f0e4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+}
+
+body.dark-mode .btn-login {
+    background: linear-gradient(105deg, #2a9d8f, #1b7a6e);
+}
+
+body.dark-mode .whatsapp-direct,
+body.dark-mode .whatsapp-btn {
+    background: #00ffb7 !important;
+}
+
+body.dark-mode .download-btn {
+    background: #00ff99 !important;
+}
+
+body.dark-mode .contact-tile {
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .contact-tile a {
+    color: #00ffaa !important;
+}
+
+body.dark-mode .qualification-list li {
+    color: #ddd;
+}
+
+body.dark-mode .theme-toggle {
+    color: #00ffaa;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .mobile-nav {
+    background: rgba(10, 20, 30, 0.95) !important;
+}
+
+body.dark-mode .mobile-nav ul li a,
+body.dark-mode .mobile-nav ul li button {
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode .close-menu {
+    color: #f0f0f0 !important;
+}
+
+/* Auto Dark Mode - System Preference */
+@media (prefers-color-scheme: dark) {
+    body:not(.light-mode-forced) {
+        background: radial-gradient(circle at 10% 30%, #0a1a2a, #0d2a1a) !important;
+    }
+    
+    body:not(.light-mode-forced) .glass-card,
+    body:not(.light-mode-forced) .glass-panel,
+    body:not(.light-mode-forced) nav,
+    body:not(.light-mode-forced) footer {
+        background: rgba(20, 30, 40, 0.7) !important;
+        color: #f0f0f0 !important;
+    }
+    
+    body:not(.light-mode-forced) h1,
+    body:not(.light-mode-forced) h2,
+    body:not(.light-mode-forced) h3 {
+        color: #f0f0f0 !important;
+    }
+}
+
   </style>
 </head>
 <body>
@@ -476,7 +594,10 @@
 </div>
 
 <main id="mainContent" style="opacity:0; transition: opacity 0.5s ease;">
-
+<!-- Theme Toggle Button -->
+<button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon" id="themeIcon"></i>
+</button>
   <!-- Mobile Sidebar & Overlay -->
   <div class="overlay" id="mobileOverlay"></div>
   <div class="mobile-nav" id="mobileNav">
@@ -526,11 +647,11 @@
       <div class="info-card glass-card">
         <h3><i class="fas fa-map-marker-alt"></i> Class Location</h3>
         <p><i class="fas fa-globe"></i>Physical (Badulla, Sri Lanka)</p>
-        <p><i class="fas fa-building"></i> Salusala , Badulla</p>
+        <p><i class="fas fa-building"></i> Salusala, Badulla</p>
         <hr>
         <h3><i class="fas fa-phone-alt"></i> Contact Details</h3>
         <p><i class="fas fa-mobile-alt"></i> +94 767899845</p>
-        <p><i class="fas fa-envelope"></i>madhaviupeksha17@gmail.com</p>
+        <p><i class="fas fa-envelope"></i> madhaviupeksha17@gmail.com</p>
         <p><i class="fab fa-whatsapp"></i> WhatsApp: +94 767899845</p>
         <a href="https://wa.me/94767899845?text=Hello%20Ms.%20Madhavi Teacher%2C%20I%20want%20to%20join%20your%20English%20class" class="whatsapp-direct" target="_blank"><i class="fab fa-whatsapp"></i> Request Join via WhatsApp</a>
       </div>
@@ -602,13 +723,15 @@
         <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
         <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
       </div>
-  <div class="footer-col">
-  <h4>Admin Login</h4>
-  <div class="login-section">
-    <input type="password" placeholder="Password" id="loginPass1">
-    <button id="loginBtn1">Login</button>
-  </div>
-</div>
+      <div class="footer-col">
+        <h4>Admin Login</h4>
+        <div class="login-section" >
+          <input type="password" placeholder="Password" id="loginPass">
+          <button id="loginBtn">Login</button>
+          <p id="error-message" class="hidden1" style="color: red;"></a>
+          </p>
+        </div>
+      </div>
       <div class="copyright">
         © 2026 English Teacher — Elevate your English with Ms. Madhavi. All rights reserved.
         <br>Developed by Thuli.
@@ -632,7 +755,66 @@
     }, 700);
   });
   
-  
+  // ==================== THEME TOGGLE (DARK/LIGHT MODE) ====================
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+// Check saved preference
+const savedTheme = localStorage.getItem('skillnest_theme');
+
+if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    document.body.classList.remove('light-mode-forced');
+    if (themeIcon) themeIcon.className = 'fas fa-sun';
+} else if (savedTheme === 'light') {
+    document.body.classList.remove('dark-mode');
+    document.body.classList.add('light-mode-forced');
+    if (themeIcon) themeIcon.className = 'fas fa-moon';
+} else {
+    // No saved preference - use system default
+    document.body.classList.remove('light-mode-forced');
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        if (themeIcon) themeIcon.className = 'fas fa-sun';
+    } else {
+        if (themeIcon) themeIcon.className = 'fas fa-moon';
+    }
+}
+
+// Toggle button click
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        if (document.body.classList.contains('dark-mode')) {
+            // Switch to Light Mode
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode-forced');
+            themeIcon.className = 'fas fa-moon';
+            localStorage.setItem('skillnest_theme', 'light');
+        } else {
+            // Switch to Dark Mode
+            document.body.classList.add('dark-mode');
+            document.body.classList.remove('light-mode-forced');
+            themeIcon.className = 'fas fa-sun';
+            localStorage.setItem('skillnest_theme', 'dark');
+        }
+    });
+}
+
+// Listen for system theme changes
+if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('skillnest_theme')) {
+            if (e.matches) {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode-forced');
+                if (themeIcon) themeIcon.className = 'fas fa-sun';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.remove('light-mode-forced');
+                if (themeIcon) themeIcon.className = 'fas fa-moon';
+            }
+        }
+    });
+}
 
   // Toast helper
   function showToast(msg, duration = 2500) {
@@ -677,11 +859,11 @@
   if(mobileTeacher) mobileTeacher.addEventListener('click', (e) => { e.preventDefault(); document.querySelector('.teacher-showcase')?.scrollIntoView({behavior:'smooth'}); closeMobileMenu(); });
   if(mobileResources) mobileResources.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('downloadSection')?.scrollIntoView({behavior:'smooth'}); closeMobileMenu(); });
   if(mobileContact) mobileContact.addEventListener('click', (e) => { e.preventDefault(); document.querySelector('.contact-box')?.scrollIntoView({behavior:'smooth'}); closeMobileMenu(); });
-  if(mobileLoginBtn) mobileLoginBtn.addEventListener('click', () => { showToast('🔐 Login portal Loading.. Stay tuned!'); closeMobileMenu(); });
+  if(mobileLoginBtn) mobileLoginBtn.addEventListener('click', () => { showToast('🔐 Login portal coming soon. Stay tuned!'); closeMobileMenu(); });
 
   // Desktop login button
   const loginDesktop = document.getElementById('loginBtnDesktop');
-  if(loginDesktop) loginDesktop.addEventListener('click', () => showToast('🔐 Login portal Loading... Stay tuned!'));
+  if(loginDesktop) loginDesktop.addEventListener('click', () => showToast('🔐 Login portal coming soon. Stay tuned!'));
 
   // Footer links smooth
   document.getElementById('footerTeacherLink')?.addEventListener('click', (e) => { e.preventDefault(); document.querySelector('.teacher-showcase')?.scrollIntoView({behavior:'smooth'}); });
@@ -753,7 +935,7 @@
   }
 
   // additional: any whatsapp direct request to join trigger toast as extra (already functional)
-  console.log("SkillNest fully responsive + mobile nav ready");
+  console.log("My english fully responsive + mobile nav ready");
 </script>
 </body>
 </html>
