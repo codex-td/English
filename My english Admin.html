@@ -583,15 +583,65 @@
                 font-size: 1.5rem;
             }
         }
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    75% { transform: translateX(8px); }
+        /* Dark Mode Styles */
+body.dark-mode {
+    background: linear-gradient(135deg, #0a1a2a 0%, #1a3a2a 100%) !important;
 }
 
+body.dark-mode .glass-card,
+body.dark-mode .glass-panel,
+body.dark-mode .admin-card,
+body.dark-mode .modal-content {
+    background: rgba(20, 30, 40, 0.7) !important;
+    color: #f0f0f0 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: white !important;
+}
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode label {
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode .btn-glass {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: #00ffaa !important;
+}
+
+body.dark-mode .student-table th {
+    background: rgba(0, 255, 157, 0.15) !important;
+}
+
+body.dark-mode .student-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i></button>
 
 <!-- Loader -->
 <div class="loader-overlay" id="loadingOverlay">
@@ -639,8 +689,35 @@
     <div class="main-container">
         <h1>
             <i class="fas fa-chalkboard-user"></i> 
-           SkillNest Admin
+            SkillNest Admin
         </h1>
+
+        <!-- Stats Cards -->
+<div class="stats-grid" style="display: grid; grid-template-columns: repeat(4.5, 1fr); gap: 10px; margin-bottom: 20px;">
+    <div class="glass-panel" style="text-align: center; padding: 20px 10px;">
+        <i class="fas fa-users" style="font-size: 2rem; color: #00ffaa;"></i>
+        <h2 id="totalStudents" style="font-size: 1.8rem; margin: 8px 0;">0</h2>
+        <p>Total Students</p>
+    </div>
+    <div class="glass-panel" style="text-align: center; padding: 20px 10px;">
+        <i class="fas fa-coins" style="font-size: 2rem; color: #ffa502;"></i>
+        <h2 id="monthlyIncome" style="font-size: 1.8rem; margin: 8px 0;">0</h2>
+        <p>Monthly Income</p>
+    </div>
+    <div class="glass-panel" style="text-align: center; padding: 20px 10px;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #ff4757;"></i>
+        <h2 id="pendingPayments" style="font-size: 1.8rem; margin: 8px 0;">0</h2>
+        <p>Pending Payments</p>
+    </div>
+</div>
+
+<style>
+    @media (min-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(4, 1fr) !important;
+        }
+    }
+</style>                             
         
         <!-- Pending Approvals Alert -->
         <div class="glass-panel" style="margin-bottom: 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
@@ -686,6 +763,10 @@
                 <i class="fas fa-arrow-up"></i>
                 <span>Promote All</span>
             </div>
+            <div class="admin-card" data-section="announcement">
+                 <i class="fab fa-whatsapp"></i>
+                 <span>Announcement</span>
+               </div>
         </div>
     </div>
 </div>
@@ -702,7 +783,7 @@
 
 <script>
     // ==================== CONFIGURATION ====================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzit9ask62mwK3peoEQKt7MKMxfHjOud1uR_OCDoBsHRAX8ecUnSUtkfZ2s4co_OM9y/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHgpXxWyq12yN5XRrGTyIQQ0LA789uHdT7S9QzDmx_yWr65pLlNW2G3CB2ah15D9h7/exec";
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
     // ==================== HELPER FUNCTIONS ====================
@@ -710,6 +791,24 @@
         document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
     }
     
+    // Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+const savedTheme = localStorage.getItem('skillnest_theme');
+if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeIcon.className = 'fas fa-sun';
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        localStorage.setItem('skillnest_theme', isDark ? 'dark' : 'light');
+    });
+}
     function showToast(msg, isError = false) {
         let toast = document.createElement('div');
         toast.className = 'toast-msg';
@@ -763,32 +862,87 @@
     });
     
     // ==================== ADMIN LOGIN ====================
-document.getElementById('adminLoginBtn').addEventListener('click', function() {
-    let u = document.getElementById('adminUser').value.trim();
-    let p = document.getElementById('adminPass').value;
-    
-    // ✅ FIXED: Proper login condition
-    const validUsernames = ['Thuli', '001@U_M_R:ADMIN'];
-    const validPasswords = ['001@Thuli_$Deshan:T1-M:T', 'E001@U_M_R:Admin-M/T'];
-    
-    if (validUsernames.includes(u) && validPasswords.includes(p)) {
-        document.getElementById('adminLoginPanel').style.display = 'none';
-        document.getElementById('adminDashboard').style.display = 'block';
-        loadPendingCount();
-        showToast('Welcome, Admin!');
+    document.getElementById('adminLoginBtn').addEventListener('click', function() {
+        let u = document.getElementById('adminUser').value;
+        let p = document.getElementById('adminPass').value;
         
-        // Clear password field
+        if (u === 'Thuli' ,'001@U_M_R:ADMIN' && p === '001@Thuli_$Deshan:T1-M:T', 'E001@U_M_R:Admin-M/T')  {
+            document.getElementById('adminLoginPanel').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            loadPendingCount();
+            showToast('Welcome, Admin!');
+        } else {
+            document.getElementById('adminLoginMsg').innerHTML = '<i class="fas fa-exclamation-circle"></i> Invalid credentials!';
+        }
+    });
+    
+    // Enter key for login
+    document.getElementById('adminPass').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('adminLoginBtn').click();
+        }
+    });
+    
+    document.getElementById('adminLogoutBtn')?.addEventListener('click', function() {
+        document.getElementById('adminDashboard').style.display = 'none';
+        document.getElementById('adminLoginPanel').style.display = 'block';
         document.getElementById('adminPass').value = '';
-    } else {
-        document.getElementById('adminLoginMsg').innerHTML = '<i class="fas fa-exclamation-circle"></i> Invalid credentials!';
-        document.getElementById('adminPass').value = '';
+    });
+// ==================== LOAD DASHBOARD STATS (NO ATTENDANCE) ====================
+async function loadDashboardStats() {
+    try {
+        // 1. Total Students
+        const students = await apiCall('getAllStudents', 'GET');
+        if (students.success) {
+            document.getElementById('totalStudents').textContent = students.data.length;
+        }
         
-        // Shake effect (optional)
-        const passInput = document.getElementById('adminPass');
-        passInput.style.animation = 'shake 0.3s ease';
-        setTimeout(() => passInput.style.animation = '', 300);
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1;
+        const currentYear = today.getFullYear();
+        const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const currentMonthName = monthNames[currentMonth];
+        
+        // 2. Monthly Income & Pending Payments
+        const payments = await apiCall('getAllPayments', 'GET');
+        
+        let monthlyTotal = 0;
+        let pendingCount = 0;
+        
+        if (payments.success && payments.data) {
+            payments.data.forEach(p => {
+                if (p.month && p.month.toLowerCase() === currentMonthName.toLowerCase() && p.year == currentYear) {
+                    monthlyTotal += 1000;
+                }
+            });
+        }
+        
+        if (students.success) {
+            students.data.forEach(s => {
+                const hasPaid = payments.success && payments.data ? 
+                    payments.data.some(p => p.id === s.id && 
+                        p.month && p.month.toLowerCase() === currentMonthName.toLowerCase() && 
+                        p.year == currentYear) : false;
+                if (!hasPaid) pendingCount++;
+            });
+        }
+        
+        document.getElementById('monthlyIncome').textContent = 'Rs.' + monthlyTotal.toLocaleString();
+        document.getElementById('pendingPayments').textContent = pendingCount;
+        
+        console.log('✅ Stats loaded - Students:', students.data.length, 
+                    'Income:', monthlyTotal, 'Pending:', pendingCount);
+        
+    } catch (e) {
+        console.error('Error loading stats:', e);
     }
-});
+}
+
+
+
+// Call after admin login - add to adminLogin success section:
+loadDashboardStats();
     // ==================== LOAD PENDING COUNT ====================
     async function loadPendingCount() {
         let r = await apiCall('getPendingRegistrations', 'GET');
@@ -811,6 +965,7 @@ document.getElementById('adminLoginBtn').addEventListener('click', function() {
             else if (section === 'filter') showFilterModal();
             else if (section === 'datafilter') showDataFilterUI();
             else if (section === 'promote') promoteAllGrades();
+            else if (section === 'announcement') showAnnouncementModal();
         });
     });
     
@@ -1709,6 +1864,55 @@ function exportViewerToCSV(data, sheetName, grade) {
     
     showToast(`✅ Exported ${data.length} records to CSV!`);
 }
+function showAnnouncementModal() {
+    let html = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fab fa-whatsapp"></i> Send Announcement</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Select Grade</label>
+                <select id="announceGrade">
+                    <option value="all">All Grades</option>
+                    ${Array.from({length: 13}, (_, i) => `<option value="${i+1}">Grade ${i+1}</option>`).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea id="announceMsg" rows="4" placeholder="Enter your announcement message..."></textarea>
+            </div>
+            <button id="sendAnnounceBtn"><i class="fab fa-whatsapp"></i> Send to WhatsApp Community</button>
+            <p style="margin-top: 15px; font-size: 0.85rem; color: #aaa;">
+                <i class="fas fa-info-circle"></i> Opens WhatsApp Community. Paste the copied message.
+            </p>
+        </div>
+    `;
+    
+    openModal(html);
+    
+    document.getElementById('sendAnnounceBtn').onclick = function() {
+        const grade = document.getElementById('announceGrade').value;
+        const msg = document.getElementById('announceMsg').value;
+        
+        if (!msg) {
+            showToast('Enter a message!', true);
+            return;
+        }
+        
+        const communityLink = 'https://chat.whatsapp.com/D9K8kTiTwrsEJjMraVnASK';
+        const fullMsg = `📢 *SkillNest Announcement* (Grade ${grade === 'all' ? 'All' : grade})\n\n${msg}\n\n_Teacher Madhavi_\nSkillNest English Academy`;
+        
+        navigator.clipboard?.writeText(fullMsg).then(() => {
+            showToast('✅ Message copied! Paste in WhatsApp Community');
+        });
+        
+        window.open(communityLink, '_blank');
+        closeModal();
+    };
+}
+
+
     // ==================== DATA FILTER ====================
     function showFilterModal() {
         let html = `
