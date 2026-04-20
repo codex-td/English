@@ -50,9 +50,65 @@
         @media (max-width:760px){body{padding:0.7rem}.grid-2cols{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:1fr}.glass-card{border-radius:1.5rem;padding:1.2rem!important}.payment-month{min-width:65px;font-size:0.75rem}.btn-glass{padding:0.6rem 1.2rem;font-size:0.85rem}}
         .admin-link{position:fixed;bottom:20px;left:20px;z-index:100;background:rgba(255,255,255,0.5);padding:8px 16px;border-radius:30px;backdrop-filter:blur(5px)}
         .admin-link a{color:#1e3a4d;text-decoration:none;font-weight:600}
+        /* Dark Mode Styles */
+body.dark-mode {
+    background: linear-gradient(135deg, #0a1a2a 0%, #1a3a2a 100%) !important;
+}
+
+body.dark-mode .glass-card,
+body.dark-mode .glass-panel,
+body.dark-mode .admin-card,
+body.dark-mode .modal-content {
+    background: rgba(20, 30, 40, 0.7) !important;
+    color: #f0f0f0 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: white !important;
+}
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode label {
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode .btn-glass {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: #00ffaa !important;
+}
+
+body.dark-mode .student-table th {
+    background: rgba(0, 255, 157, 0.15) !important;
+}
+
+body.dark-mode .student-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i></button>
 
 <div class="loader-overlay" id="loadingOverlay">
     <div class="spinner"></div>
@@ -64,7 +120,7 @@
     <div id="loginPanel" class="panel active-panel glass-card" style="padding:2rem;max-width:520px;margin:2rem auto">
         <div style="text-align:center;margin-bottom:1.2rem">
             <i class="fas fa-graduation-cap" style="font-size:3rem;color:#43f7b2"></i>
-            <h2 style="font-weight:800;margin-top:0.5rem">SkillNest English Access</h2>
+            <h2 style="font-weight:800;margin-top:0.5rem">SkillNest Access</h2>
             <p>powered by <strong>Google Sheets</strong> sync</p>
         </div>
         <div style="margin-bottom:1rem">
@@ -125,7 +181,7 @@
                 <button type="button" class="btn-glass" id="backToLoginFromReg">Back to Login</button>
             </div>
         </form>
-        <p style="margin-top:1rem;font-size:0.75rem;color:#555"><i class="fas fa-info-circle"></i> You'll receive your Student ID to your whatsapp ,after approval.</p>
+        <p style="margin-top:1rem;font-size:0.75rem;color:#555"><i class="fas fa-info-circle"></i> You'll receive your Student ID after approval.</p>
     </div>
 
     <!-- STUDENT DASHBOARD -->
@@ -159,6 +215,11 @@
                 <div style="display:flex;justify-content:center;margin:8px 0">
                     <canvas id="pieChartCanvas" width="200" height="200" style="max-height:210px;max-width:100%"></canvas>
                 </div>
+                <!-- Add after pie chart canvas -->
+               <div style="margin-top: 20px;">
+                  <h4 style="margin-bottom: 10px;"><i class="fas fa-chart-line"></i> Progress Over Time</h4>
+                     <canvas id="progressChart" width="300" height="150" style="max-height: 150px; width: 100%;"></canvas>
+               </div>
                 <div id="skillBarsContainer" style="margin-top:12px"></div>
                 <div id="weaknessDetail" style="margin-top:12px"></div>
             </div>
@@ -183,15 +244,32 @@
                 </div>
             </div>
         </div>
-        <footer><i class="fas fa-database"></i>SkillNest - Live from Google Sheets • Developed by <strong>Thuli</strong></footer>
+        <footer><i class="fas fa-database"></i> Live from Google Sheets • Developed by <strong>Thuli</strong></footer>
     </div>
 </div>
 
 <div class="admin-link"><a href="index.html"><i class="fas fa-crown"></i> Back</a></div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNMWka34ZKl-9hzCjM_gUhIyYd1HrdjZAk9gF_lgRLFo5EEzDnwem0hg3O92e0u84l/exec";
-    
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHgpXxWyq12yN5XRrGTyIQQ0LA789uHdT7S9QzDmx_yWr65pLlNW2G3CB2ah15D9h7/exec";
+    // Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+const savedTheme = localStorage.getItem('skillnest_theme');
+if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeIcon.className = 'fas fa-sun';
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        localStorage.setItem('skillnest_theme', isDark ? 'dark' : 'light');
+    });
+}
     function showLoader(s){document.getElementById('loadingOverlay').style.display=s?'flex':'none'}
     function showToast(m,e=false){let t=document.createElement('div');t.className='toast-msg';t.style.background=e?'#e67e22':'#2ecc71';t.innerText=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}
     
@@ -209,7 +287,7 @@
         }catch(e){return{error:true,message:e.message}}
     }
 
-    let currentStudent=null,pieChart=null,currentPapers=[],currentPaperIndex=0;
+    let currentStudent=null,pieChart=null,progressChart=null,currentPapers=[],currentPaperIndex=0;
 
     // Login
     async function performLogin(){
@@ -236,66 +314,85 @@ async function loadProfile(s){
     let att = await apiCall('getAttendance', 'GET', { id: s.id });
     let records = att.success ? att.data : [];
     
-    console.log('All attendance records:', records);
-    
     // Filter Present records only
     let presentRecords = records.filter(a => a.status === 'Present');
-    console.log('Present records:', presentRecords);
     
-    // Get the most recent present date
     if (presentRecords.length > 0) {
         let lastPresentDate = presentRecords[0].date;
         
-        // ✅ ADD ONE DAY to fix timezone shift for display
-        if (lastPresentDate && lastPresentDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            const parts = lastPresentDate.split('-');
-            const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
-            originalDate.setUTCDate(originalDate.getUTCDate() + 1);
+        // ✅ UNIVERSAL DATE FIX - Works with ANY format
+        let displayDate = lastPresentDate;
+        
+        try {
+            // Convert to Date object (works for all formats)
+            let dateObj;
             
-            const year = originalDate.getUTCFullYear();
-            const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
-            const day = String(originalDate.getUTCDate()).padStart(2, '0');
-            lastPresentDate = `${year}-${month}-${day}`;
+            if (lastPresentDate instanceof Date) {
+                dateObj = new Date(lastPresentDate);
+            } else if (typeof lastPresentDate === 'string') {
+                dateObj = new Date(lastPresentDate);
+            } else {
+                dateObj = new Date(lastPresentDate);
+            }
+            
+            if (!isNaN(dateObj)) {
+                // Add one day
+                dateObj.setDate(dateObj.getDate() + 1);
+                
+                // Format options - choose one:
+                
+                // Option 1: YYYY-MM-DD (2026-04-20)
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                displayDate = `${year}-${month}-${day}`;
+                
+                // Option 2: Mon Apr 20 2026 (uncomment if preferred)
+                // displayDate = dateObj.toDateString();
+                
+                // Option 3: 20/04/2026 (uncomment if preferred)
+                // displayDate = `${day}/${month}/${year}`;
+            }
+        } catch (e) {
+            console.log('Date parse error:', e);
+            displayDate = lastPresentDate; // Fallback to original
         }
         
-        document.getElementById('lastAttendDate').innerText = lastPresentDate;
-        console.log('Last present date (display):', lastPresentDate);
+        document.getElementById('lastAttendDate').innerText = displayDate;
     } else {
         document.getElementById('lastAttendDate').innerText = 'No records';
     }
     
-    // ✅ Check today's status - ALSO add one day to record date for comparison
+    // ✅ Check today's status - Universal
     let today = new Date();
-    let todayStr = today.getFullYear() + '-' + 
-                   String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-                   String(today.getDate()).padStart(2, '0');
-    
-    console.log('Today formatted:', todayStr);
+    today.setHours(0, 0, 0, 0);
     
     let todayPresent = false;
     for (let record of presentRecords) {
-        let recordDate = record.date;
-        
-        // ✅ ADD ONE DAY to record date for comparison
-        if (recordDate && recordDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            const parts = recordDate.split('-');
-            const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
-            originalDate.setUTCDate(originalDate.getUTCDate() + 1);
+        try {
+            let recordDate = record.date;
+            let recordObj;
             
-            const year = originalDate.getUTCFullYear();
-            const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
-            const day = String(originalDate.getUTCDate()).padStart(2, '0');
-            recordDate = `${year}-${month}-${day}`;
-        }
-        
-        console.log('Comparing:', recordDate, 'with', todayStr);
-        if (recordDate === todayStr) {
-            todayPresent = true;
-            break;
+            if (recordDate instanceof Date) {
+                recordObj = new Date(recordDate);
+            } else {
+                recordObj = new Date(recordDate);
+            }
+            
+            if (!isNaN(recordObj)) {
+                // Add one day for comparison
+                recordObj.setDate(recordObj.getDate() + 1);
+                recordObj.setHours(0, 0, 0, 0);
+                
+                if (recordObj.getTime() === today.getTime()) {
+                    todayPresent = true;
+                    break;
+                }
+            }
+        } catch (e) {
+            console.log('Compare error:', e);
         }
     }
-    
-    console.log('Today present?', todayPresent);
     
     if (todayPresent) {
         document.getElementById('inClassStatus').innerHTML = 
@@ -305,7 +402,6 @@ async function loadProfile(s){
             '<span style="background:#e74c3c;color:white;padding:4px 12px;border-radius:20px">⏳ Not Attended Today</span>';
     }
 }
-
     async function renderExamAnalysis(id){
     let marks = await apiCall('getExamMarks', 'GET', { id });
     let skills = await apiCall('getSkill', 'GET', { id });
@@ -356,6 +452,7 @@ async function loadProfile(s){
     
     if (currentPapers.length) updatePieAndBars();
 }
+
     function updatePieAndBars(){
         if(!currentPapers.length)return;
         let p=currentPapers[currentPaperIndex];
@@ -375,6 +472,69 @@ async function loadProfile(s){
             container.appendChild(div);
         });
     }
+   
+
+async function renderProgressChart() {
+    const marks = await apiCall('getStudentMarksProgress', 'GET', { id: currentStudent.id });
+    
+    if (!marks.success || !marks.data.length) return;
+    
+    const dates = marks.data.map(m => {
+        const parts = m.date.split('-');
+        return parts[2] + '/' + parts[1];
+    });
+    
+    const averages = marks.data.map(m => m.averageMark);
+    
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    
+    if (progressChart) progressChart.destroy();
+    
+    progressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Your Marks',
+                data: averages,
+                borderColor: '#00ffaa',
+                backgroundColor: 'rgba(0, 255, 170, 0.1)',
+                borderWidth: 3,
+                pointBackgroundColor: '#2ed573',
+                pointBorderColor: 'white',
+                pointRadius: 5,
+                pointHoverRadius: 8,
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => `Mark: ${ctx.raw}%`
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100,
+                    grid: { color: 'rgba(255,255,255,0.1)' },
+                    ticks: { callback: (v) => v + '%' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+}
+
+
 
     async function renderPayment(id){
         let payments=await apiCall('getPayments','GET',{id});
