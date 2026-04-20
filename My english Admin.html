@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title> Admin · Management System</title>
+    <title> SkillNest Admin · Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
        <link rel="shortcut icon" href="image/icon.png" type="image/x-icon">
@@ -638,6 +638,25 @@ body.dark-mode .student-table td {
     justify-content: center;
     font-size: 1.3rem;
 }
+
+        #adminLoginPanel .glass-panel {
+            text-align: center;
+        }
+        
+        #adminLoginPanel .fa-lock {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
     </style>
 </head>
 <body>
@@ -783,7 +802,7 @@ body.dark-mode .student-table td {
 
 <script>
     // ==================== CONFIGURATION ====================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHgpXxWyq12yN5XRrGTyIQQ0LA789uHdT7S9QzDmx_yWr65pLlNW2G3CB2ah15D9h7/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjlL1iwSLYmVjLyuwBzbTKzSxDiU46dZbBxMUSCd3M-g1q1EwmaZZTs9QIKVzS59IN/exec";
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
     // ==================== HELPER FUNCTIONS ====================
@@ -861,40 +880,102 @@ if (themeToggle) {
         }
     });
     
-       // ==================== ADMIN LOGIN ====================
-document.getElementById('adminLoginBtn').addEventListener('click', function() {
-    let u = document.getElementById('adminUser').value;
-    let p = document.getElementById('adminPass').value;
     
-    // Username + Password yugala check karanna
-    if ((u === 'Thuli' && p === '001@Thuli_$Deshan:T1-M:T')) {
-        // Thuli + 001@U_M_R:ADMIN
-        document.getElementById('adminLoginPanel').style.display = 'none';
-        document.getElementById('adminDashboard').style.display = 'block';
-        loadDashboardStats();
-        loadPendingCount();
-        showToast('Welcome, Admin Thuli!');
+         // ==================== ADMIN LOGIN (WITH ATTEMPT LIMIT) ====================
+    let loginAttempts = 0;
+    const MAX_ATTEMPTS = 3;
+    const BLOCK_KEY = 'adminLoginBlocked';
+    const ATTEMPT_KEY = 'adminLoginAttempts';
+    
+    // Check if already blocked
+    if (localStorage.getItem(BLOCK_KEY) === 'true') {
+        document.getElementById('adminLoginPanel').innerHTML = `
+            <div class="glass-panel" style="max-width: 400px; margin: 0 auto; text-align: center;">
+                <i class="fas fa-lock" style="font-size: 4rem; color: #ff4757; margin-bottom: 20px;"></i>
+                <h2 style="color: white;">Device Blocked</h2>
+                <p style="color: rgba(255,255,255,0.8); margin: 20px 0;">Too many failed login attempts. Your device has been blocked for security reasons.</p>
+                <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">Contact administrator to unblock.<br>Developer Thuli</p>
+                <button onclick="window.location.href='index.html'" style="margin-top: 20px; background: #747d8c;">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+            </div>
+        `;
+        document.getElementById('adminLoginBtn')?.remove();
     }
-    else if (u === '001@U_M_R:ADMIN' && p === 'E001@U_M_R:Admin-M/T') {
-        // Username: 001@U_M_R:ADMIN, Password: 001@Thuli_$Deshan:T1-M:T
-        document.getElementById('adminLoginPanel').style.display = 'none';
-        document.getElementById('adminDashboard').style.display = 'block';
-        loadDashboardStats();
-        loadPendingCount();
-        showToast('Welcome, Madhavi Teacher!');
-    }
-    else if (u === 'Madhavi' && p === 'E001@U_M_R:Admin-M/T') {
-        // Username + Password same
-        document.getElementById('adminLoginPanel').style.display = 'none';
-        document.getElementById('adminDashboard').style.display = 'block';
-        loadDashboardStats();
-        loadPendingCount();
-        showToast('Welcome, Madhavi Teacher!');
-    }
-    else {
-        document.getElementById('adminLoginMsg').innerHTML = '<i class="fas fa-exclamation-circle"></i> Invalid credentials!';
-    }
-});
+    
+    // Load saved attempts
+    const savedAttempts = localStorage.getItem(ATTEMPT_KEY);
+    if (savedAttempts) loginAttempts = parseInt(savedAttempts);
+    
+    document.getElementById('adminLoginBtn').addEventListener('click', async function() {
+        let u = document.getElementById('adminUser').value.trim();
+        let p = document.getElementById('adminPass').value;
+        
+        const validUsernames = ['Thuli', '001@U_M_R:ADMIN'];
+        const validPasswords = ['001@Thuli_$Deshan:T1-M:T', 'E001@U_M_R:Admin-M/T'];
+        
+        if (validUsernames.includes(u) && validPasswords.includes(p)) {
+            // ✅ Successful login - reset attempts
+            loginAttempts = 0;
+            localStorage.removeItem(ATTEMPT_KEY);
+            
+            document.getElementById('adminLoginPanel').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            loadPendingCount();
+            showToast('Welcome, Admin!');
+            document.getElementById('adminPass').value = '';
+        } else {
+            // ❌ Failed login
+            loginAttempts++;
+            localStorage.setItem(ATTEMPT_KEY, loginAttempts);
+            
+            const remainingAttempts = MAX_ATTEMPTS - loginAttempts;
+            
+            if (loginAttempts >= MAX_ATTEMPTS) {
+                // 🚫 BLOCK DEVICE
+                localStorage.setItem(BLOCK_KEY, 'true');
+                
+                // Get device info
+                const deviceInfo = {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    screen: `${window.screen.width}x${window.screen.height}`,
+                    ip: 'Client IP'
+                };
+                
+                // Get IP address
+                try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+                    deviceInfo.ip = ipData.ip;
+                } catch (e) {}
+                
+                // Save to Google Sheet
+                showLoader(true);
+                await apiCall('saveBlockedDevice', 'POST', { 
+                    username: u || 'Unknown', 
+                    deviceInfo: deviceInfo 
+                });
+                showLoader(false);
+                
+                // Show blocked message
+                document.getElementById('adminLoginMsg').innerHTML = '<i class="fas fa-lock"></i> Device blocked! Contact admin.';
+                
+                // Reload after 2 seconds
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                // Show remaining attempts
+                document.getElementById('adminLoginMsg').innerHTML = 
+                    `<i class="fas fa-exclamation-triangle"></i> Invalid credentials! ${remainingAttempts} attempt${remainingAttempts > 1 ? 's' : ''} remaining.`;
+                document.getElementById('adminPass').value = '';
+                
+                // Shake effect
+                const passInput = document.getElementById('adminPass');
+                passInput.style.animation = 'shake 0.3s ease';
+                setTimeout(() => passInput.style.animation = '', 300);
+            }
+        }
+    });
     
     // Enter key for login
     document.getElementById('adminPass').addEventListener('keypress', function(e) {
@@ -908,59 +989,118 @@ document.getElementById('adminLoginBtn').addEventListener('click', function() {
         document.getElementById('adminLoginPanel').style.display = 'block';
         document.getElementById('adminPass').value = '';
     });
-// ==================== LOAD DASHBOARD STATS (NO ATTENDANCE) ====================
+// ==================== LOAD DASHBOARD STATS (DEBUG PAYMENT DATE) ====================
 async function loadDashboardStats() {
     try {
-        // 1. Total Students
         const students = await apiCall('getAllStudents', 'GET');
         if (students.success) {
             document.getElementById('totalStudents').textContent = students.data.length;
         }
         
+        const payments = await apiCall('getAllPayments', 'GET');
         const today = new Date();
         const currentMonth = today.getMonth() + 1;
         const currentYear = today.getFullYear();
-        const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const currentMonthName = monthNames[currentMonth];
         
-        // 2. Monthly Income & Pending Payments
-        const payments = await apiCall('getAllPayments', 'GET');
+        console.log('=== MONTHLY INCOME DEBUG ===');
+        console.log('Current Month:', currentMonth, 'Year:', currentYear);
         
         let monthlyTotal = 0;
-        let pendingCount = 0;
         
         if (payments.success && payments.data) {
+            console.log('Total payments:', payments.data.length);
+            
+            // ✅ First: Show ALL payment fields
+            payments.data.forEach((p, i) => {
+                console.log(`Payment ${i}:`, JSON.stringify(p, null, 2));
+                console.log(`  - Has paymentDate? ${p.paymentDate ? 'YES' : 'NO'}`);
+                console.log(`  - paymentDate value: "${p.paymentDate}"`);
+                console.log(`  - month: "${p.month}"`);
+                console.log(`  - year: "${p.year}"`);
+            });
+            
+            // ✅ Try with original month if paymentDate is empty
+            const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const currentMonthName = monthNames[currentMonth];
+            
             payments.data.forEach(p => {
-                if (p.month && p.month.toLowerCase() === currentMonthName.toLowerCase() && p.year == currentYear) {
+                let countThis = false;
+                
+                // Method 1: Use paymentDate
+                if (p.paymentDate) {
+                    const parts = String(p.paymentDate).split('T')[0].split('-');
+                    const payMonth = Number(parts[1]);
+                    const payYear = Number(parts[0]);
+                    
+                    console.log(`PaymentDate method: ${p.id} → Month ${payMonth}, Year ${payYear}`);
+                    
+                    if (payMonth === currentMonth && payYear === currentYear) {
+                        countThis = true;
+                    }
+                }
+                
+                // Method 2: Use original month (fallback)
+                if (!countThis && p.month && p.year) {
+                    const payMonth = monthNames.indexOf(String(p.month));
+                    const payYear = Number(p.year);
+                    
+                    console.log(`Original month method: ${p.id} → ${p.month} (${payMonth}), ${payYear}`);
+                    
+                    if (payMonth === currentMonth && payYear === currentYear) {
+                        countThis = true;
+                    }
+                }
+                
+                if (countThis) {
                     monthlyTotal += 1000;
+                    console.log(`✅ COUNTED: ${p.id} - Total: Rs.${monthlyTotal}`);
                 }
             });
         }
         
+        console.log('FINAL Monthly Total: Rs.' + monthlyTotal);
+        document.getElementById('monthlyIncome').textContent = 'Rs.' + monthlyTotal.toLocaleString();
+        
+        // Pending Payments
+        const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const currentMonthName = monthNames[currentMonth];
+        
+        let pendingCount = 0;
         if (students.success) {
             students.data.forEach(s => {
                 const hasPaid = payments.success && payments.data ? 
                     payments.data.some(p => p.id === s.id && 
-                        p.month && p.month.toLowerCase() === currentMonthName.toLowerCase() && 
-                        p.year == currentYear) : false;
+                        p.month && String(p.month).toLowerCase() === currentMonthName.toLowerCase() && 
+                        Number(p.year) === currentYear) : false;
                 if (!hasPaid) pendingCount++;
             });
         }
         
-        document.getElementById('monthlyIncome').textContent = 'Rs.' + monthlyTotal.toLocaleString();
         document.getElementById('pendingPayments').textContent = pendingCount;
+        console.log('Pending Count:', pendingCount);
         
-        console.log('✅ Stats loaded - Students:', students.data.length, 
-                    'Income:', monthlyTotal, 'Pending:', pendingCount);
+        // ==================== ✅ ADD THIS PART ONLY ====================
+        // Save Monthly Income to history
+        if (today.getDate() === 1) {  // ← Change 20 to today's date for testing
+            const saveResult = await apiCall('saveMonthlyIncome', 'POST', {
+                month: currentMonthName,
+                year: currentYear,
+                totalIncome: monthlyTotal,
+                studentCount: students.data.length
+            });
+            console.log('Monthly income save result:', saveResult);
+            if (saveResult.success) {
+                showToast('✅ Monthly income saved!');
+            }
+        }
+        // ==================== END OF ADDED PART ====================
         
     } catch (e) {
-        console.error('Error loading stats:', e);
+        console.error('Error:', e);
     }
 }
-
-
-
 // Call after admin login - add to adminLogin success section:
 loadDashboardStats();
     // ==================== LOAD PENDING COUNT ====================
