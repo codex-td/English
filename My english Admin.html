@@ -989,7 +989,7 @@ if (themeToggle) {
         document.getElementById('adminLoginPanel').style.display = 'block';
         document.getElementById('adminPass').value = '';
     });
-// ==================== LOAD DASHBOARD STATS (DEBUG PAYMENT DATE) ====================
+// ==================== LOAD DASHBOARD STATS (HTML SIDE FIX) ====================
 async function loadDashboardStats() {
     try {
         const students = await apiCall('getAllStudents', 'GET');
@@ -1006,55 +1006,41 @@ async function loadDashboardStats() {
         console.log('Current Month:', currentMonth, 'Year:', currentYear);
         
         let monthlyTotal = 0;
+        const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const currentMonthName = monthNames[currentMonth];
         
         if (payments.success && payments.data) {
             console.log('Total payments:', payments.data.length);
             
-            // ✅ First: Show ALL payment fields
-            payments.data.forEach((p, i) => {
-                console.log(`Payment ${i}:`, JSON.stringify(p, null, 2));
-                console.log(`  - Has paymentDate? ${p.paymentDate ? 'YES' : 'NO'}`);
-                console.log(`  - paymentDate value: "${p.paymentDate}"`);
-                console.log(`  - month: "${p.month}"`);
-                console.log(`  - year: "${p.year}"`);
-            });
-            
-            // ✅ Try with original month if paymentDate is empty
-            const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const currentMonthName = monthNames[currentMonth];
-            
             payments.data.forEach(p => {
-                let countThis = false;
+                let paymentMonth = null;
+                let paymentYear = null;
                 
-                // Method 1: Use paymentDate
+                // Method 1: Try paymentDate
                 if (p.paymentDate) {
                     const parts = String(p.paymentDate).split('T')[0].split('-');
-                    const payMonth = Number(parts[1]);
-                    const payYear = Number(parts[0]);
-                    
-                    console.log(`PaymentDate method: ${p.id} → Month ${payMonth}, Year ${payYear}`);
-                    
-                    if (payMonth === currentMonth && payYear === currentYear) {
-                        countThis = true;
-                    }
+                    paymentMonth = Number(parts[1]);
+                    paymentYear = Number(parts[0]);
                 }
                 
-                // Method 2: Use original month (fallback)
-                if (!countThis && p.month && p.year) {
-                    const payMonth = monthNames.indexOf(String(p.month));
-                    const payYear = Number(p.year);
-                    
-                    console.log(`Original month method: ${p.id} → ${p.month} (${payMonth}), ${payYear}`);
-                    
-                    if (payMonth === currentMonth && payYear === currentYear) {
-                        countThis = true;
-                    }
+                // ✅ Method 2: Extract from timestamp (HTML FIX)
+                if (!paymentMonth && p.timestamp) {
+                    const tsParts = String(p.timestamp).split('T')[0].split('-');
+                    paymentMonth = Number(tsParts[1]);
+                    paymentYear = Number(tsParts[0]);
                 }
                 
-                if (countThis) {
+                // Method 3: Fallback to original month
+                if (!paymentMonth && p.month && p.year) {
+                    paymentMonth = monthNames.indexOf(String(p.month));
+                    paymentYear = Number(p.year);
+                }
+                
+                // Count if payment month matches current month
+                if (paymentMonth === currentMonth && paymentYear === currentYear) {
                     monthlyTotal += 1000;
-                    console.log(`✅ COUNTED: ${p.id} - Total: Rs.${monthlyTotal}`);
+                    console.log(`✅ COUNTED: ${p.id} | Original: ${p.month} | Paid: ${paymentMonth}/${paymentYear}`);
                 }
             });
         }
@@ -1063,10 +1049,6 @@ async function loadDashboardStats() {
         document.getElementById('monthlyIncome').textContent = 'Rs.' + monthlyTotal.toLocaleString();
         
         // Pending Payments
-        const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const currentMonthName = monthNames[currentMonth];
-        
         let pendingCount = 0;
         if (students.success) {
             students.data.forEach(s => {
@@ -1081,21 +1063,16 @@ async function loadDashboardStats() {
         document.getElementById('pendingPayments').textContent = pendingCount;
         console.log('Pending Count:', pendingCount);
         
-        // ==================== ✅ ADD THIS PART ONLY ====================
-        // Save Monthly Income to history
-        if (today.getDate() === 1) {  // ← Change 20 to today's date for testing
+        // Save Monthly Income
+        if (today.getDate() === 30) {  // Change to today's date for testing
             const saveResult = await apiCall('saveMonthlyIncome', 'POST', {
                 month: currentMonthName,
                 year: currentYear,
                 totalIncome: monthlyTotal,
                 studentCount: students.data.length
             });
-            console.log('Monthly income save result:', saveResult);
-            if (saveResult.success) {
-                showToast('✅ Monthly income saved!');
-            }
+            console.log('Save result:', saveResult);
         }
-        // ==================== END OF ADDED PART ====================
         
     } catch (e) {
         console.error('Error:', e);
