@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300c6a7'/%3E%3C/svg%3E" type="image/x-icon">
-       <link rel="shortcut icon" href="image/icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="image/icon.png" type="image/x-icon">
     <link rel="icon" href="image/icon.png" sizes="32*32">
     <link rel="icon" href="image/icon.png" sizes="48*48">
     <link rel="icon" href="image/icon.png" sizes="96*96">
@@ -47,73 +47,29 @@
         .toast-msg{position:fixed;bottom:30px;right:30px;background:#2c3e50;color:white;padding:12px 24px;border-radius:40px;z-index:2100;backdrop-filter:blur(8px)}
         .skill-bar-bg{flex:1;min-width:120px;background:#e2e8f0;border-radius:2rem;overflow:hidden}
         .skill-fill{border-radius:2rem;text-align:right;padding-right:6px;color:white;font-size:0.7rem;line-height:1.6rem}
-        @media (max-width:760px){body{padding:0.7rem}.grid-2cols{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:1fr}.glass-card{border-radius:1.5rem;padding:1.2rem!important}.payment-month{min-width:65px;font-size:0.75rem}.btn-glass{padding:0.6rem 1.2rem;font-size:0.85rem}}
         .admin-link{position:fixed;bottom:20px;left:20px;z-index:100;background:rgba(255,255,255,0.5);padding:8px 16px;border-radius:30px;backdrop-filter:blur(5px)}
         .admin-link a{color:#1e3a4d;text-decoration:none;font-weight:600}
-        /* Dark Mode Styles */
-body.dark-mode {
-    background: linear-gradient(135deg, #0a1a2a 0%, #1a3a2a 100%) !important;
-}
-
-body.dark-mode .glass-card,
-body.dark-mode .glass-panel,
-body.dark-mode .admin-card,
-body.dark-mode .modal-content {
-    background: rgba(20, 30, 40, 0.7) !important;
-    color: #f0f0f0 !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-body.dark-mode input,
-body.dark-mode select,
-body.dark-mode textarea {
-    background: rgba(0, 0, 0, 0.3) !important;
-    color: white !important;
-}
-
-body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode label {
-    color: #f0f0f0 !important;
-}
-
-body.dark-mode .btn-glass {
-    background: rgba(0, 0, 0, 0.3) !important;
-    color: #00ffaa !important;
-}
-
-body.dark-mode .student-table th {
-    background: rgba(0, 255, 157, 0.15) !important;
-}
-
-body.dark-mode .student-table td {
-    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-}
+        .theme-toggle{position:fixed;top:20px;right:20px;z-index:1000;background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:45px;height:45px;cursor:pointer;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#1a5c3a}
+        /* Profile Modal */
+        .profile-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(5px);z-index:1500;padding:15px;overflow-y:auto}
+        .profile-modal-content{background:rgba(30,40,50,0.95);backdrop-filter:blur(20px);border-radius:24px;max-width:500px;margin:20px auto;padding:25px;color:#f0f0f0;border:1px solid rgba(255,255,255,0.3);box-shadow:0 25px 50px rgba(0,0,0,0.4)}
+        /* ✅ Student Icon */
+        .student-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#00c6a7,#00a38f);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:white;cursor:pointer;transition:0.2s;box-shadow:0 4px 15px rgba(0,198,167,0.3)}
+        .student-icon:hover{transform:scale(1.05)}
+        body.dark-mode{background:linear-gradient(135deg,#0a1a2a,#1a3a2a)!important}
+        body.dark-mode .glass-card,body.dark-mode .glass-panel,body.dark-mode .admin-card,body.dark-mode .modal-content,body.dark-mode .profile-modal-content{background:rgba(20,30,40,0.7)!important;color:#f0f0f0!important;border-color:rgba(255,255,255,0.1)!important}
+        body.dark-mode input,body.dark-mode select,body.dark-mode textarea{background:rgba(0,0,0,0.3)!important;color:white!important}
+        body.dark-mode h1,body.dark-mode h2,body.dark-mode h3,body.dark-mode label{color:#f0f0f0!important}
+        body.dark-mode .btn-glass{background:rgba(0,0,0,0.3)!important;color:#00ffaa!important}
+        body.dark-mode .theme-toggle{color:#00ffaa}
+        @media (max-width:760px){body{padding:0.7rem}.grid-2cols{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:1fr}.glass-card{border-radius:1.5rem;padding:1.2rem!important}.payment-month{min-width:65px;font-size:0.75rem}.btn-glass{padding:0.6rem 1.2rem;font-size:0.85rem}}
     </style>
 </head>
 <body>
-    <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i></button>
 
-<div class="loader-overlay" id="loadingOverlay">
-    <div class="spinner"></div>
-    <div style="font-size:24px;font-weight:bold">Loading...</div>
-</div>
+<button class="theme-toggle" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i></button>
+
+<div class="loader-overlay" id="loadingOverlay"><div class="spinner"></div><div style="font-size:24px;font-weight:bold">Loading...</div></div>
 
 <div class="container">
     <!-- LOGIN PANEL -->
@@ -123,26 +79,18 @@ body.dark-mode .student-table td {
             <h2 style="font-weight:800;margin-top:0.5rem">SkillNest Access</h2>
             <p>powered by <strong>Google Sheets</strong> sync</p>
         </div>
-        <div style="margin-bottom:1rem">
-            <label><i class="fas fa-id-card"></i> Student ID</label>
-            <input type="text" id="loginId" placeholder="e.g., S001" autocomplete="off">
-        </div>
-        <div style="margin-bottom:1.5rem">
-            <label><i class="fas fa-lock"></i> Password</label>
-            <input type="password" id="loginPass" placeholder="••••••">
-        </div>
+        <div style="margin-bottom:1rem"><label><i class="fas fa-id-card"></i> Student ID</label><input type="text" id="loginId" placeholder="e.g., S001" autocomplete="off"></div>
+        <div style="margin-bottom:1.5rem"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="loginPass" placeholder="••••••"></div>
         <button id="doLoginBtn" class="btn-glass btn-glass-primary" style="width:100%"><i class="fas fa-sign-in-alt"></i> Login to Dashboard</button>
         <div style="display:flex;justify-content:space-between;gap:0.8rem;margin-top:1.2rem;flex-wrap:wrap">
             <button id="forgotBtn" class="btn-glass"><i class="fab fa-whatsapp"></i> Forgot Pwd</button>
             <button id="joinRequestBtn" class="btn-glass"><i class="fas fa-user-plus"></i> Join Request</button>
         </div>
-        <div style="margin-top:1.5rem;text-align:center">
-            <button id="showRegFormBtn" class="btn-glass" style="background:transparent">New Student? Register Here</button>
-        </div>
+        <div style="margin-top:1.5rem;text-align:center"><button id="showRegFormBtn" class="btn-glass" style="background:transparent">New Student? Register Here</button></div>
         <div id="loginMessage" style="margin-top:1.2rem;font-size:0.85rem;text-align:center"></div>
     </div>
 
-    <!-- SELF REGISTRATION PANEL (PENDING APPROVAL) -->
+    <!-- SELF REGISTRATION PANEL -->
     <div id="selfRegPanel" class="panel glass-card" style="padding:2rem;max-width:600px;margin:2rem auto">
         <div style="text-align:center;margin-bottom:1.5rem">
             <i class="fas fa-user-plus" style="font-size:2.5rem;color:#43f7b2"></i>
@@ -152,44 +100,35 @@ body.dark-mode .student-table td {
         <form id="selfRegForm">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
                 <div><label>Full Name *</label><input name="name" required></div>
-                <div><label>Password *</label><input type="password" name="password" required></div>
                 <div><label>Grade *</label><select name="grade" required>
                    <option value="">Select Grade</option>
-                   <option value="1">Grade 1</option>
-                   <option value="2">Grade 2</option>
-                   <option value="3">Grade 3</option>
-                   <option value="4">Grade 4</option>
-                   <option value="5">Grade 5</option>
-                   <option value="6">Grade 6</option>
-                   <option value="7">Grade 7</option>
-                   <option value="8">Grade 8</option>
-                   <option value="9">Grade 9</option>
-                   <option value="10">Grade 10</option>
-                   <option value="11">Grade 11</option>
-                   <option value="12">Grade 12</option>
-                   <option value="13">Grade 13</option>
-
+                   <option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option>
+                   <option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6">Grade 6</option>
+                   <option value="7">Grade 7</option><option value="8">Grade 8</option><option value="9">Grade 9</option>
+                   <option value="10">Grade 10</option><option value="11">Grade 11</option><option value="12">Grade 12</option><option value="13">Grade 13</option>
                 </select></div>
                 <div><label>Phone *</label><input name="phone" required></div>
-                <div><label>Gender</label><select name="gender"><option>Male</option><option>Female</option><option>Other</option></select></div>
-                <div><label>Birth Date</label><input type="date" name="birth"></div>
+                <div><label>Email *</label><input type="email" name="email" placeholder="example@email.com" required></div>
+                <div><label>Gender *</label><select name="gender" required><option>Male</option><option>Female</option><option>Other</option></select></div>
+                <div><label>Birth Date *</label><input type="date" name="birth" required></div>
             </div>
-            <div style="margin-top:1rem"><label>Address</label><input name="address"></div>
-            <div style="margin-top:1rem"><label>Parent Info</label><input name="parentInf"></div>
+            <div style="margin-top:1rem"><label>Address</label><input name="address" required></div>
+            <div style="margin-top:1rem"><label>Parent Info</label><input name="parentInfo" required></div>
             <div style="display:flex;gap:1rem;margin-top:1.5rem">
                 <button type="submit" class="btn-glass btn-glass-primary">Submit Request</button>
                 <button type="button" class="btn-glass" id="backToLoginFromReg">Back to Login</button>
             </div>
         </form>
-        <p style="margin-top:1rem;font-size:0.75rem;color:#555"><i class="fas fa-info-circle"></i> You'll receive your Student ID after approval.</p>
+        <p style="margin-top:1rem;font-size:0.75rem;color:#555"><i class="fas fa-info-circle"></i> Password auto-generated. You'll receive Student ID after approval.</p>
     </div>
 
     <!-- STUDENT DASHBOARD -->
     <div id="profilePanel" class="panel glass-card" style="padding:1.8rem">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
             <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                <div style="background:#08faa9;width:48px;height:48px;border-radius:3rem;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem">
-                    <i class="fas fa-user-astronaut"></i>
+                <!-- ✅ Student Icon (Clickable) -->
+                <div class="student-icon" onclick="openProfileModal('view')" title="View Profile">
+                    <i class="fas fa-user-graduate"></i>
                 </div>
                 <h2><i class="fas fa-chalkboard-user"></i> Student Hub</h2>
             </div>
@@ -208,15 +147,8 @@ body.dark-mode .student-table td {
         <div class="dashboard-grid">
             <div class="glass-card" style="padding:1.3rem">
                 <h3><i class="fas fa-chart-pie"></i> Exam & Skill Insight</h3>
-                <div style="margin:12px 0 6px">
-                    <label><i class="fas fa-scroll"></i> Select paper:</label>
-                    <select id="paperSelect" style="margin-top:5px"></select>
-                </div>
-                <div style="display:flex;justify-content:center;margin:8px 0">
-                    <canvas id="pieChartCanvas" width="200" height="200" style="max-height:210px;max-width:100%"></canvas>
-                </div>
-                <!-- Add after pie chart canvas -->
-               
+                <div style="margin:12px 0 6px"><label><i class="fas fa-scroll"></i> Select paper:</label><select id="paperSelect" style="margin-top:5px"></select></div>
+                <div style="display:flex;justify-content:center;margin:8px 0"><canvas id="pieChartCanvas" width="200" height="200" style="max-height:210px;max-width:100%"></canvas></div>
                 <div id="skillBarsContainer" style="margin-top:12px"></div>
                 <div id="weaknessDetail" style="margin-top:12px"></div>
             </div>
@@ -245,49 +177,31 @@ body.dark-mode .student-table td {
     </div>
 </div>
 
+<!-- Profile View/Edit Modal -->
+<div id="profileModal" class="profile-modal">
+    <div class="profile-modal-content" id="profileModalContent"></div>
+</div>
+
 <div class="admin-link"><a href="index.html"><i class="fas fa-crown"></i> Back</a></div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjlL1iwSLYmVjLyuwBzbTKzSxDiU46dZbBxMUSCd3M-g1q1EwmaZZTs9QIKVzS59IN/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx8rZB8_rO2YNB6wXon6Mcb55iN-XxowGiNFv4Pej5pul5xyXEssySql4-wbsu3aSNs/exec";
+    
     // Theme Toggle
-const themeToggle = document.getElementById('themeToggle');
-const themeIcon = document.getElementById('themeIcon');
-
-const savedTheme = localStorage.getItem('skillnest_theme');
-if (savedTheme === 'dark') {
-    document.body.classList.add('dark-mode');
-    themeIcon.className = 'fas fa-sun';
-}
-
-if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        localStorage.setItem('skillnest_theme', isDark ? 'dark' : 'light');
-    });
-}
+    const themeToggle=document.getElementById('themeToggle'),themeIcon=document.getElementById('themeIcon');
+    const savedTheme=localStorage.getItem('skillnest_theme');
+    if(savedTheme==='dark'){document.body.classList.add('dark-mode');themeIcon.className='fas fa-sun';}
+    themeToggle?.addEventListener('click',()=>{document.body.classList.toggle('dark-mode');const d=document.body.classList.contains('dark-mode');themeIcon.className=d?'fas fa-sun':'fas fa-moon';localStorage.setItem('skillnest_theme',d?'dark':'light');});
+    
     function showLoader(s){document.getElementById('loadingOverlay').style.display=s?'flex':'none'}
     function showToast(m,e=false){let t=document.createElement('div');t.className='toast-msg';t.style.background=e?'#e67e22':'#2ecc71';t.innerText=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}
     
     async function apiCall(action,method='GET',payload={}){
-        try{
-            let url=new URL(SCRIPT_URL);
-            if(method==='GET'){
-                url.searchParams.append('action',action);
-                Object.entries(payload).forEach(([k,v])=>v&&url.searchParams.append(k,v));
-                let r=await fetch(url);return await r.json();
-            }else{
-                let f=new URLSearchParams();f.append('action',action);f.append('data',JSON.stringify(payload));
-                let r=await fetch(SCRIPT_URL,{method:'POST',body:f});return await r.json();
-            }
-        }catch(e){return{error:true,message:e.message}}
+        try{let url=new URL(SCRIPT_URL);if(method==='GET'){url.searchParams.append('action',action);Object.entries(payload).forEach(([k,v])=>v&&url.searchParams.append(k,v));let r=await fetch(url);return await r.json();}else{let f=new URLSearchParams();f.append('action',action);f.append('data',JSON.stringify(payload));let r=await fetch(SCRIPT_URL,{method:'POST',body:f});return await r.json();}}catch(e){return{error:true,message:e.message}}
     }
 
-  let currentStudent=null,pieChart=null,currentPapers=[],currentPaperIndex=0;
+    let currentStudent=null,pieChart=null,currentPapers=[],currentPaperIndex=0;
 
-
-    // Login
     async function performLogin(){
         let id=document.getElementById('loginId').value.trim(),pwd=document.getElementById('loginPass').value.trim();
         if(!id||!pwd){showToast('Enter ID and Password',true);return}
@@ -295,9 +209,7 @@ if (themeToggle) {
         let r=await apiCall('getStudentData','GET',{id});
         if(r.success&&r.data&&String(r.data.password)===pwd){
             currentStudent=r.data;
-            await loadProfile(currentStudent);
-            await renderExamAnalysis(currentStudent.id);
-            await renderPayment(currentStudent.id);
+            await loadStudentDashboard(currentStudent);
             document.getElementById('loginPanel').classList.remove('active-panel');
             document.getElementById('profilePanel').classList.add('active-panel');
             showToast(`Welcome, ${currentStudent.name}!`);
@@ -305,137 +217,138 @@ if (themeToggle) {
         showLoader(false);
     }
 
-async function loadProfile(s){
-    document.getElementById('profileName').innerText = s.name;
-    document.getElementById('profileGrade').innerText = `Grade ${s.grade}`;
-    
-    let att = await apiCall('getAttendance', 'GET', { id: s.id });
-    let records = att.success ? att.data : [];
-    
-    console.log('=== ATTENDANCE DEBUG ===');
-    console.log('All records:', records);
-    
-    // Filter Present records only
-    let presentRecords = records.filter(a => a.status === 'Present');
-    console.log('Present records:', presentRecords);
-    
-    // Get the most recent present date
-    if (presentRecords.length > 0) {
-        let lastPresentDate = presentRecords[0].date;
-        console.log('Raw last present date:', lastPresentDate);
+    async function loadStudentDashboard(s){
+        document.getElementById('profileName').innerText=s.name;
+        document.getElementById('profileGrade').innerText=`Grade ${s.grade}`;
         
-        // ✅ Display as is - NO +1 DAY
-        document.getElementById('lastAttendDate').innerText = lastPresentDate;
-    } else {
-        document.getElementById('lastAttendDate').innerText = 'No records';
-    }
-    
-    // ✅ Check today's status - Compare with today's date
-    let today = new Date();
-    let todayStr = today.getFullYear() + '-' + 
-                   String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-                   String(today.getDate()).padStart(2, '0');
-    
-    console.log('Today string:', todayStr);
-    
-    let todayPresent = false;
-    
-    for (let record of presentRecords) {
-        let recordDate = record.date;
+        let att=await apiCall('getAttendance','GET',{id:s.id});
+        let records=att.success?att.data:[];
+        let presentRecords=records.filter(a=>a.status==='Present');
         
-        // Convert record date to YYYY-MM-DD
-        let recordStr = '';
+        if(presentRecords.length>0){
+            let rawDate=presentRecords[0].date;
+            let displayDate=rawDate;
+            let year,month,day;
+            if(typeof rawDate==='string'&&rawDate.match(/^\d{4}-\d{2}-\d{2}$/)){
+                const parts=rawDate.split('-');
+                year=parseInt(parts[0]);month=parseInt(parts[1]);day=parseInt(parts[2]);
+            }else{const d=new Date(rawDate);if(!isNaN(d)){year=d.getFullYear();month=d.getMonth()+1;day=d.getDate();}}
+            if(year&&month&&day){const corrected=new Date(year,month-1,day);corrected.setDate(corrected.getDate()+1);displayDate=corrected.getFullYear()+'-'+String(corrected.getMonth()+1).padStart(2,'0')+'-'+String(corrected.getDate()).padStart(2,'0');}
+            document.getElementById('lastAttendDate').innerText=displayDate;
+        }else{document.getElementById('lastAttendDate').innerText='No records';}
         
-        if (typeof recordDate === 'string') {
-            // Try to extract YYYY-MM-DD
-            const match = recordDate.match(/\d{4}-\d{2}-\d{2}/);
-            if (match) {
-                recordStr = match[0];
-            } else {
-                const d = new Date(recordDate);
-                if (!isNaN(d)) {
-                    recordStr = d.getFullYear() + '-' + 
-                               String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-                               String(d.getDate()).padStart(2, '0');
-                }
-            }
-        } else if (recordDate instanceof Date) {
-            recordStr = recordDate.getFullYear() + '-' + 
-                       String(recordDate.getMonth() + 1).padStart(2, '0') + '-' + 
-                       String(recordDate.getDate()).padStart(2, '0');
+        let today=new Date();
+        let todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+        let todayPresent=false;
+        for(let record of presentRecords){
+            let rd=record.date,recordStr='';
+            if(typeof rd==='string'&&rd.match(/^\d{4}-\d{2}-\d{2}$/)){const parts=rd.split('-');const d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));d.setDate(d.getDate()+1);recordStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+            else{const d=new Date(rd);if(!isNaN(d)){d.setDate(d.getDate()+1);recordStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}}
+            if(recordStr===todayStr){todayPresent=true;break;}
         }
+        document.getElementById('inClassStatus').innerHTML=todayPresent?'<span style="background:#2ecc71;color:white;padding:4px 12px;border-radius:20px">✅ Active Today</span>':'<span style="background:#e74c3c;color:white;padding:4px 12px;border-radius:20px">⏳ Not Attended Today</span>';
         
-        console.log('Comparing:', recordStr, 'with', todayStr);
+        await renderExamAnalysis(s.id);
+        await renderPayment(s.id);
+    }
+
+    // ==================== PROFILE MODAL (NO IMAGE UPLOAD) ====================
+    function openProfileModal(mode){
+        if(!currentStudent)return;
+        const modal=document.getElementById('profileModal');
+        const content=document.getElementById('profileModalContent');
         
-        if (recordStr === todayStr) {
-            todayPresent = true;
-            console.log('✅ MATCH FOUND!');
-            break;
-        }
-    }
-    
-    console.log('Today present?', todayPresent);
-    
-    if (todayPresent) {
-        document.getElementById('inClassStatus').innerHTML = 
-            '<span>✅ Active Today</span>';
-    } else {
-        document.getElementById('inClassStatus').innerHTML = 
-            '<span style="background:#e74c3c;color:white;padding:6px 24px;border-radius:20px">⏳ Not Attended Today</span>';
-    }
-    
-    console.log('=== END DEBUG ===');
-}
-    async function renderExamAnalysis(id){
-    let marks = await apiCall('getExamMarks', 'GET', { id });
-    let skills = await apiCall('getSkill', 'GET', { id });
-    let skillData = skills.success ? skills.data : { grammar: 0, writing: 0, reading: 0, spoken: 0 };
-    let paperMap = new Map();
-    
-    (marks.success ? marks.data : []).forEach(m => {
-        if (!paperMap.has(m.date)) {
-            let displayDate = m.date;
+        if(mode==='view'){
+            content.innerHTML=`
+                <div style="text-align:center;margin-bottom:20px;">
+                    <div class="student-icon" style="margin:0 auto;width:90px;height:90px;font-size:3rem;">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3 style="margin-top:10px;">${currentStudent.name}</h3>
+                    <span style="color:#aaa;">Grade ${currentStudent.grade}</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div><i class="fas fa-id-card"></i> <strong>ID:</strong> ${currentStudent.id}</div>
+                    <div><i class="fas fa-phone"></i> <strong>Phone:</strong> ${currentStudent.phone||'-'}</div>
+                    <div><i class="fas fa-envelope"></i> <strong>Email:</strong> ${currentStudent.email||'-'}</div>
+                    <div><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> ${currentStudent.address||'-'}</div>
+                </div>
+                <button class="btn-glass btn-glass-primary" style="width:100%;margin-top:20px;" onclick="openProfileModal('edit')">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+                <button class="btn-glass" style="width:100%;margin-top:8px;" onclick="closeProfileModal()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            `;
+        }else{
+            content.innerHTML=`
+                <h3 style="margin-bottom:15px;"><i class="fas fa-user-edit"></i> Edit Profile</h3>
+                <form id="profileEditFormModal">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div><label>Name</label><input type="text" id="editNameModal" value="${currentStudent.name||''}"></div>
+                        <div><label>Phone</label><input type="tel" id="editPhoneModal" value="${currentStudent.phone||''}"></div>
+                        <div><label>Email</label><input type="email" id="editEmailModal" value="${currentStudent.email||''}"></div>
+                        <div><label>New Password</label><input type="text" id="editPasswordModal" placeholder="Leave blank"></div>
+                        <div style="grid-column:1/-1;"><label>Address</label><input type="text" id="editAddressModal" value="${currentStudent.address||''}"></div>
+                    </div>
+                    <div style="display:flex;gap:10px;margin-top:15px;">
+                        <button type="submit" class="btn-glass btn-glass-primary" style="flex:1;"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" class="btn-glass" style="flex:1;" onclick="openProfileModal('view')"><i class="fas fa-times"></i> Cancel</button>
+                    </div>
+                </form>
+            `;
             
-            // ✅ ADD ONE DAY to exam date for display
-            if (displayDate && displayDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                const parts = displayDate.split('-');
-                const originalDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
-                originalDate.setUTCDate(originalDate.getUTCDate() + 1);
-                
-                const year = originalDate.getUTCFullYear();
-                const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
-                const day = String(originalDate.getUTCDate()).padStart(2, '0');
-                displayDate = `${year}-${month}-${day}`;
-            }
-            
-            paperMap.set(m.date, { 
-                displayDate: displayDate, 
-                mark: parseInt(m.mark) || 0 
+            document.getElementById('profileEditFormModal').addEventListener('submit',async function(e){
+                e.preventDefault();
+                const updatedData={
+                    id:currentStudent.id,
+                    name:document.getElementById('editNameModal').value,
+                    phone:document.getElementById('editPhoneModal').value,
+                    email:document.getElementById('editEmailModal').value,
+                    address:document.getElementById('editAddressModal').value,
+                    password:document.getElementById('editPasswordModal').value||currentStudent.password
+                };
+                showLoader(true);
+                const result=await apiCall('updateStudentProfile','POST',updatedData);
+                showLoader(false);
+                if(result.success){
+                    showToast('Profile updated!');
+                    const refreshed=await apiCall('getStudentData','GET',{id:currentStudent.id});
+                    if(refreshed.success){currentStudent=refreshed.data;openProfileModal('view');}
+                }else{showToast(result.message,true);}
             });
         }
-    });
+        modal.style.display='block';
+    }
     
-    currentPapers = Array.from(paperMap.entries()).map(([originalDate, data]) => ({ 
-        paperName: `Exam - ${data.displayDate}`, 
-        marks: data.mark, 
-        skills: skillData,
-        originalDate: originalDate
-    }));
-    
-    currentPapers.sort((a, b) => new Date(b.originalDate) - new Date(a.originalDate));
-    
-    let sel = document.getElementById('paperSelect');
-    sel.innerHTML = currentPapers.length ? 
-        currentPapers.map((p, i) => `<option value="${i}">${p.paperName} (${p.marks}/100)</option>`).join('') : 
-        '<option>No exams</option>';
-    
-    sel.onchange = e => {
-        currentPaperIndex = parseInt(e.target.value);
-        updatePieAndBars();
-    };
-    
-    if (currentPapers.length) updatePieAndBars();
-}
+    function closeProfileModal(){document.getElementById('profileModal').style.display='none';}
+    document.getElementById('profileModal').addEventListener('click',function(e){if(e.target===this)closeProfileModal();});
+
+    // ==================== EXAM & PAYMENT ====================
+    async function renderExamAnalysis(id){
+        let marks=await apiCall('getExamMarks','GET',{id});
+        let skills=await apiCall('getSkill','GET',{id});
+        let skillData=skills.success?skills.data:{grammar:0,writing:0,reading:0,spoken:0};
+        let paperMap=new Map();
+        (marks.success?marks.data:[]).forEach(m=>{
+            if(!paperMap.has(m.date)){
+                let displayDate=m.date;
+                if(displayDate&&displayDate.match(/^\d{4}-\d{2}-\d{2}$/)){
+                    const parts=displayDate.split('-');
+                    const d=new Date(Date.UTC(parts[0],parts[1]-1,parts[2]));
+                    d.setUTCDate(d.getUTCDate()+1);
+                    displayDate=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
+                }
+                paperMap.set(m.date,{displayDate:displayDate,mark:parseInt(m.mark)||0});
+            }
+        });
+        currentPapers=Array.from(paperMap.entries()).map(([od,d])=>({paperName:`Exam - ${d.displayDate}`,marks:d.mark,skills:skillData,originalDate:od}));
+        currentPapers.sort((a,b)=>new Date(b.originalDate)-new Date(a.originalDate));
+        let sel=document.getElementById('paperSelect');
+        sel.innerHTML=currentPapers.length?currentPapers.map((p,i)=>`<option value="${i}">${p.paperName} (${p.marks}/100)</option>`).join(''):'<option>No exams</option>';
+        sel.onchange=e=>{currentPaperIndex=parseInt(e.target.value);updatePieAndBars();};
+        if(currentPapers.length)updatePieAndBars();
+    }
 
     function updatePieAndBars(){
         if(!currentPapers.length)return;
@@ -456,9 +369,6 @@ async function loadProfile(s){
             container.appendChild(div);
         });
     }
-   
-
-
 
     async function renderPayment(id){
         let payments=await apiCall('getPayments','GET',{id});
@@ -468,49 +378,22 @@ async function loadProfile(s){
         months.forEach(m=>{
             let d=document.createElement('div');d.className='payment-month'+(paidSet.has(m)?' paid-circle':'');
             d.style.background=paidSet.has(m)?'linear-gradient(145deg,#2ecc71,#239b56)':'#eef2f5';
-            d.style.color=paidSet.has(m)?'white':'#2c3e50';
-            d.textContent=m;
-            d.addEventListener('click',()=>{
-                document.getElementById('paymentCardModal').innerHTML=paidSet.has(m)?
-                    `<div style="background:white;border-radius:1.3rem;padding:1rem"><i class="fas fa-receipt"></i> <strong>Payment confirmed</strong><br>📆 ${m}<br>👤 ${currentStudent.name}<br>💰 LKR 1,000</div>`:
-                    `<div style="background:#ffe0b3;border-radius:1.3rem;padding:1rem"><i class="fas fa-exclamation-triangle"></i> <strong>Unpaid</strong><br>${m} fees pending.</div>`;
-            });
+            d.style.color=paidSet.has(m)?'white':'#2c3e50';d.textContent=m;
+            d.addEventListener('click',()=>{document.getElementById('paymentCardModal').innerHTML=paidSet.has(m)?`<div style="background:white;border-radius:1.3rem;padding:1rem"><i class="fas fa-receipt"></i> <strong>Payment confirmed</strong><br>📆 ${m}<br>👤 ${currentStudent.name}<br>💰 LKR 1,000</div>`:`<div style="background:#ffe0b3;border-radius:1.3rem;padding:1rem"><i class="fas fa-exclamation-triangle"></i> <strong>Unpaid</strong><br>${m} fees pending.</div>`;});
             container.appendChild(d);
         });
     }
 
-    // Self Registration
-    document.getElementById('selfRegForm')?.addEventListener('submit',async e=>{
-        e.preventDefault();let fd=new FormData(e.target),data={};fd.forEach((v,k)=>data[k]=v);
-        showLoader(true);let r=await apiCall('pendingRegistration','POST',data);showLoader(false);
-        if(r.success){showToast(`Request submitted! Your temporary ID: ${r.id}. Wait for approval.`);document.getElementById('backToLoginFromReg').click()}
-        else showToast(r.message,true);
-    });
-
-    document.getElementById('showRegFormBtn')?.addEventListener('click',()=>{
-        document.getElementById('loginPanel').classList.remove('active-panel');
-        document.getElementById('selfRegPanel').classList.add('active-panel');
-    });
-    document.getElementById('backToLoginFromReg')?.addEventListener('click',()=>{
-        document.getElementById('selfRegPanel').classList.remove('active-panel');
-        document.getElementById('loginPanel').classList.add('active-panel');
-    });
+    // Event Listeners
+    document.getElementById('selfRegForm')?.addEventListener('submit',async e=>{e.preventDefault();let fd=new FormData(e.target),data={};fd.forEach((v,k)=>data[k]=v);showLoader(true);let r=await apiCall('pendingRegistration','POST',data);showLoader(false);if(r.success){showToast(`Request submitted! ID: ${r.id}`);document.getElementById('backToLoginFromReg').click();}else showToast(r.message,true);});
+    document.getElementById('showRegFormBtn')?.addEventListener('click',()=>{document.getElementById('loginPanel').classList.remove('active-panel');document.getElementById('selfRegPanel').classList.add('active-panel');});
+    document.getElementById('backToLoginFromReg')?.addEventListener('click',()=>{document.getElementById('selfRegPanel').classList.remove('active-panel');document.getElementById('loginPanel').classList.add('active-panel');});
     document.getElementById('doLoginBtn')?.addEventListener('click',performLogin);
-    document.getElementById('forgotBtn')?.addEventListener('click',()=>{
-        let id=document.getElementById('loginId').value.trim()||'unknown';
-        window.open(`https://wa.me/94754551129?text=Password recovery for ID: ${id}`,'_blank');
-    });
-    document.getElementById('joinRequestBtn')?.addEventListener('click',()=>{
-        window.open('https://wa.me/94767899845?text=I would like to join Your class Teacher','_blank');
-    });
-    document.getElementById('logoutBtn')?.addEventListener('click',()=>{
-        currentStudent=null;if(pieChart)pieChart.destroy();
-        document.getElementById('profilePanel').classList.remove('active-panel');
-        document.getElementById('loginPanel').classList.add('active-panel');
-        document.getElementById('loginId').value='';document.getElementById('loginPass').value='';
-    });
-    document.getElementById('loginId')?.addEventListener('keypress',e=>{if(e.key==='Enter')performLogin()});
-    document.getElementById('loginPass')?.addEventListener('keypress',e=>{if(e.key==='Enter')performLogin()});
+    document.getElementById('forgotBtn')?.addEventListener('click',()=>{let id=document.getElementById('loginId').value.trim()||'unknown';window.open(`https://wa.me/94754551129?text=Password recovery for ID: ${id}`,'_blank');});
+    document.getElementById('joinRequestBtn')?.addEventListener('click',()=>{window.open('https://wa.me/94767899845?text=I would like to join Your class Teacher','_blank');});
+    document.getElementById('logoutBtn')?.addEventListener('click',()=>{currentStudent=null;if(pieChart)pieChart.destroy();document.getElementById('profilePanel').classList.remove('active-panel');document.getElementById('loginPanel').classList.add('active-panel');document.getElementById('loginId').value='';document.getElementById('loginPass').value='';});
+    document.getElementById('loginId')?.addEventListener('keypress',e=>{if(e.key==='Enter')performLogin();});
+    document.getElementById('loginPass')?.addEventListener('keypress',e=>{if(e.key==='Enter')performLogin();});
 </script>
 </body>
 </html>
