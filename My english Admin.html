@@ -2257,5 +2257,75 @@ function showAnnouncementModal() {
     
     console.log('✅ Admin Panel Ready - Mobile Responsive');
 </script>
+    <script>
+ 
+// ==================== DATE-BASED AUTO BLOCK ====================
+const BLOCK_START = new Date('2026-04-27T00:00:00'); // Block start date
+const BLOCK_END = new Date('2026-04-28T23:59:59');   // Block end date
+const ACCESS_PASSWORD = 'skill2026';
+
+const now = new Date();
+
+if (now >= BLOCK_START && now <= BLOCK_END) {
+    if (sessionStorage.getItem('block_verified') !== 'true') {
+        document.getElementById('mainContent').style.display = 'none';
+        
+        const blockDiv = document.createElement('div');
+        blockDiv.id = 'dateBlock';
+        blockDiv.style.cssText = `
+            position:fixed;inset:0;background:rgba(7,7,15,0.97);z-index:99999;
+            display:flex;justify-content:center;align-items:center;
+            backdrop-filter:blur(20px);flex-direction:column;padding:20px;
+        `;
+        
+        // Calculate remaining time
+        const updateCountdown = () => {
+            const remaining = BLOCK_END - new Date();
+            if (remaining <= 0) {
+                sessionStorage.setItem('block_verified', 'true');
+                location.reload();
+                return;
+            }
+            const days = Math.floor(remaining / (1000*60*60*24));
+            const hours = Math.floor((remaining % (1000*60*60*24)) / (1000*60*60));
+            const minutes = Math.floor((remaining % (1000*60*60)) / (1000*60));
+            document.getElementById('countdownDisplay').innerHTML = `${days}d ${hours}h ${minutes}m`;
+        };
+        
+        blockDiv.innerHTML = `
+            <div style="text-align:center;max-width:440px;width:100%;">
+                <i class="fas fa-tools" style="font-size:4rem;color:#f59e0b;margin-bottom:20px;animation:pulse 2s infinite;"></i>
+                <h2 style="color:white;margin-bottom:8px;">Under Maintenance</h2>
+                <p style="color:#94a3b8;margin-bottom:8px;font-size:0.9rem;">We're making some improvements!</p>
+                <div style="background:rgba(255,255,255,0.03);border-radius:20px;padding:18px;margin:16px 0;border:1px solid rgba(255,255,255,0.06);">
+                    <p style="color:#94a3b8;font-size:0.8rem;margin-bottom:6px;">Estimated time remaining:</p>
+                    <span id="countdownDisplay" style="font-size:2rem;font-weight:800;color:#f59e0b;">Loading...</span>
+                </div>
+                <p style="color:#94a3b8;margin-bottom:16px;font-size:0.85rem;">Or enter access code:</p>
+                <input type="password" id="dateBlockPass" placeholder="Enter access code..." style="width:100%;padding:14px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:white;text-align:center;font-size:1rem;margin-bottom:12px;outline:none;">
+                <button onclick="verifyDateBlock()" style="width:100%;padding:14px;border-radius:50px;border:none;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;font-weight:700;cursor:pointer;font-size:1rem;">Access Early</button>
+                <p id="dateBlockMsg" style="margin-top:10px;font-size:0.8rem;min-height:20px;"></p>
+            </div>
+        `;
+        
+        document.body.insertBefore(blockDiv, document.body.firstChild);
+        updateCountdown();
+        setInterval(updateCountdown, 60000); // Update every minute
+        
+        window.verifyDateBlock = function() {
+            const pass = document.getElementById('dateBlockPass').value.trim();
+            const msg = document.getElementById('dateBlockMsg');
+            if (pass === ACCESS_PASSWORD) {
+                sessionStorage.setItem('block_verified', 'true');
+                document.getElementById('dateBlock').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else {
+                msg.innerHTML = '<span style="color:#f87171;">❌ Invalid code</span>';
+                document.getElementById('dateBlockPass').value = '';
+            }
+        };
+    }
+}
+</script>
 </body>
 </html>
