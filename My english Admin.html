@@ -188,19 +188,83 @@
         .status-Completed { background: #2ed573; color: white; }
         .status-Pending { background: #ffa502; color: white; }
         
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); position: fixed; }
-            .sidebar.show-sidebar.mobile-open { transform: translateX(0); width: 70%; }
-            .main-content { margin-left: 0 !important; padding: 12px; padding-bottom: 60px; }
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .charts-row { grid-template-columns: 1fr; gap: 12px; }
-            .section-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .payment-month-grid { grid-template-columns: repeat(3, 1fr); }
-            .top-navbar { flex-direction: column; align-items: stretch; }
-            .search-global { width: 100%; }
-            .nav-icons { justify-content: flex-end; }
-            .form-grid-2 { grid-template-columns: 1fr; }
-        }
+         @media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        background: var(--sidebar-bg);
+        backdrop-filter: blur(20px);
+        z-index: 1000;
+        width: 75%;
+    }
+    .sidebar.show-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    .main-content {
+        margin-left: 0 !important;
+        padding: 12px;
+        padding-bottom: 60px;
+    }
+    .bottom-nav {
+        display: flex;
+    }
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .charts-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .section-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .payment-month-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .top-navbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-global {
+        width: 100%;
+    }
+    .nav-icons {
+        justify-content: flex-end;
+    }
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+    .modal-content {
+        max-width: 95%;
+        margin: 10px auto;
+        padding: 15px;
+    }
+    
+    /* ✅ FIX: Mobile Sidebar Text Color */
+    .sidebar .sidebar-link {
+        color: var(--text-primary) !important;
+    }
+    .sidebar .sidebar-link i {
+        color: var(--accent) !important;
+    }
+    .sidebar .sidebar-link span {
+        color: var(--text-primary) !important;
+    }
+    .sidebar .sidebar-link:hover {
+        background: rgba(0, 255, 170, 0.15) !important;
+        color: var(--accent) !important;
+    }
+    .sidebar .sidebar-link.active {
+        background: rgba(0, 255, 170, 0.2) !important;
+        color: var(--accent) !important;
+        border-left: 3px solid var(--accent);
+    }
+    .sidebar .logo-text {
+        color: var(--text-primary) !important;
+    }
+}
         @media (max-width: 480px) {
             .stat-card h3 { font-size: 1.2rem; }
             .stat-card i { font-size: 1.3rem; }
