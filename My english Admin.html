@@ -826,6 +826,20 @@
                     });
                 }
                 document.getElementById('pendingPayments').innerText = pendingCount;
+                // පළමුව monthNames array එක define කරන්න (function එක ඇතුලේ)
+const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const currentMonthName = monthNames[currentMonth];
+
+// ඉන්පසු monthly income save code එක
+if (today.getDate() === 30) {
+    const saveResult = await apiCall('saveMonthlyIncome', 'POST', {
+        month: currentMonthName,
+        year: currentYear,
+        totalIncome: monthlyTotal,
+        studentCount: totalStudentsCount
+    });
+    console.log('Monthly income saved:', saveResult);
+}
                 
                 let todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
                 let attendanceData = await apiCall('getAttendanceByDate', 'GET', { date: todayStr });
