@@ -135,7 +135,7 @@
         .loader-text { font-size: 1.6rem; letter-spacing: 6px; background: linear-gradient(95deg, #000000, #eff0ef, #757277); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
         .loader-dots { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
-        .loader-dots span { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #c300fe, #00d26a); animation: bounce 1s infinite; }
+        .loader-dots span { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #d8d4d4, #000000); animation: bounce 1s infinite; }
         .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
         .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes bounce { 0%,100% { transform: translateY(0); opacity: 0.3; } 50% { transform: translateY(-15px); opacity: 1; } }
@@ -427,7 +427,7 @@
             .floating-wa { bottom: 85px; }
         }
 
-        /* Secret Modal */
+        /* Secret Admin Modal - Hidden Style Lock */
         .secret-modal {
             display: none;
             position: fixed;
@@ -441,11 +441,12 @@
         .secret-card {
             background: rgba(15,15,28,0.95);
             border-radius: var(--radius-lg);
-            max-width: 300px;
+            max-width: 400px;
             width: 100%;
             padding: 35px 28px;
             text-align: center;
             border: 1px solid rgba(168,85,247,0.3);
+            box-shadow: 0 0 50px rgba(168,85,247,0.2);
         }
         .secret-input {
             width: 100%;
@@ -455,16 +456,23 @@
             background: rgba(255,255,255,0.04);
             color: white;
             text-align: center;
+            font-size: 1rem;
             margin-bottom: 14px;
             outline: none;
+            letter-spacing: 2px;
         }
+        .secret-input:focus { border-color: var(--neon-purple); box-shadow: 0 0 25px rgba(255, 3, 179, 0.2); }
+        .secret-lock { font-size: 3.5rem; color:#ff0080; margin-bottom: 14px; animation: lockPulse 2s infinite; }
+        @keyframes lockPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.08); } }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
         
         /* Sound Notification */
         .sound-toast {
             position: fixed;
             bottom: 100px;
             right: 20px;
-            background: linear-gradient(95deg, #00d26a, #0ae0c0);
+            background: linear-gradient(95deg, #ffffff88, #ffffff4d);
             color: #0a0f1f;
             padding: 12px 20px;
             border-radius: 50px;
@@ -474,7 +482,7 @@
             z-index: 10000;
             font-weight: 600;
             animation: slideIn 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0,210,106,0.3);
+            box-shadow: 0 5px 20px rgba(255, 1, 149, 0.3);
         }
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
@@ -645,7 +653,10 @@
                 <a href="#" style="color: var(--text-secondary); text-decoration: none; display: block; margin: 8px 0;">Curriculum 2026</a>
                 <a href="#" style="color: var(--text-secondary); text-decoration: none; display: block; margin: 8px 0;">Past Papers</a>
             </div>
-            <div><h4>Contact Info</h4><p><i class="fas fa-phone"></i> +94 76 789 9845</p><p><i class="fas fa-map-pin"></i> Salusala, Badulla</p></div>
+            <div><h4>Contact Info</h4><br><p><i class="fas fa-phone"></i> +94 76 789 9845</p>
+                <p><i class="fas fa-envelope"></i> madhaviupeksha17@gmail.com</p>
+                <p><i class="fas fa-map-pin"></i> Salusala, Badulla</p>
+                <p><i class="fas fa-clock"></i> Sat & Sun: 8AM - 12PM</p></div><br>
             <div class="copyright">© 2026 SkillNest English — Elevate your English with Ms. Madhavi.<br>Developed by Thuli | Version UMR</div>
         </footer>
     </div>
@@ -670,10 +681,19 @@
     </div>
 </div>
 
-<!-- Secret Admin Modal -->
+<!-- Secret Admin Modal - Hidden Style Lock (Original Feature) -->
 <div class="secret-modal" id="secretModal">
-    <div class="secret-card"><i class="fas fa-fingerprint" style="font-size:3rem; color:#ff0095;"></i><h3>Secure Admin Access</h3><input type="password" id="secretPass" placeholder="Enter passkey..." class="secret-input"><button onclick="verifySecret()" class="action-btn" style="width:100%;">Verify Access</button><button onclick="closeSecret()" style="background:none; border:none; color:var(--text-dim); margin-top:10px; cursor:pointer;">Cancel</button><p id="secretMsg" style="margin-top:10px;"></p></div>
+    <div class="secret-card">
+        <div class="secret-lock"><i class="fas fa-fingerprint"></i></div>
+        <h3 style="margin-bottom: 6px; color: white;">Secure Admin Access</h3>
+        <p style="color: var(--text-dim); font-size: 0.8rem; margin-bottom: 20px;">Enter authorization key to continue</p>
+        <input type="password" id="secretPass" placeholder="Enter passkey..." autocomplete="off" class="secret-input">
+        <button onclick="verifySecret()" class="action-btn" style="width: 100%; background: linear-gradient(95deg, #ff009d, #ff6cc7); border: none;">Verify Access</button>
+        <button onclick="closeSecret()" style="width: 100%; padding: 10px; background: transparent; border: none; color: var(--text-dim); cursor: pointer; margin-top: 8px;">Cancel</button>
+        <p id="secretMsg" style="margin-top: 10px; font-size: 0.8rem; min-height: 20px;"></p>
+    </div>
 </div>
+
 
 <script>
     // ==================== SOUND FUNCTION ====================
@@ -935,7 +955,7 @@
     // ==================== TEXT TO SPEECH FUNCTION (අලුතින් එකතු කළා) ====================
 function speakText(message, isSuccess) {
     if ('speechSynthesis' in window) {
-        
+        // කලින් කතා කරන දේ නවත්වන්න
         window.speechSynthesis.cancel();
         
         const utterance = new SpeechSynthesisUtterance(message);
