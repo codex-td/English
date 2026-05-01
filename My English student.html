@@ -766,7 +766,7 @@
 </nav>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUhbseLFlOJmOmbXLsYU8JX-rP_OnhCbXoXuYXcGQ4cuL71L8bg5rH-EBULVCCvN4/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEdsPt0VapvSeAhFAzwwthqbCH5Y2lbRim0fJ2Cd2KsQxAm6HxSCAPSblRK3Fo8UjS/exec";
     let isDark = localStorage.getItem('skillnest_dark') !== 'light';
     function applyTheme() { if(isDark){ document.body.classList.remove('light-mode'); document.getElementById('themeIcon').className='fas fa-moon'; } else { document.body.classList.add('light-mode'); document.getElementById('themeIcon').className='fas fa-sun'; } }
     applyTheme(); document.getElementById('themeToggle').addEventListener('click',()=>{ isDark=!isDark; localStorage.setItem('skillnest_dark',isDark?'dark':'light'); applyTheme(); });
